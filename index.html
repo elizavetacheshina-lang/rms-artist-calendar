@@ -1,69 +1,679 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Возможные даты</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-*{box-sizing:border-box} body{margin:0;padding:24px 16px 32px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--tg-theme-bg-color,#fff);color:var(--tg-theme-text-color,#222)}
-.title{font-size:27px;font-weight:700;margin-bottom:8px}.subtitle{font-size:15px;line-height:1.45;opacity:.65;margin-bottom:24px}
-.departments{display:flex;flex-direction:column;gap:12px}.department-button{width:100%;border:none;border-radius:16px;padding:18px;text-align:left;font-size:17px;font-weight:600;background:var(--tg-theme-secondary-bg-color,#f2f2f2);color:var(--tg-theme-text-color,#222)}
-.calendar-screen{display:none}.back-button{border:none;background:transparent;padding:0;margin-bottom:20px;font-size:15px;color:var(--tg-theme-link-color,#2481cc)}
-.section-title{font-size:23px;font-weight:700;margin-bottom:20px}.month{font-size:20px;font-weight:600;margin-bottom:14px}.calendar{background:var(--tg-theme-secondary-bg-color,#f4f4f5);border-radius:18px;padding:14px}
-.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekday{text-align:center;font-size:12px;opacity:.55;padding-bottom:6px}
-.day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:16px}.day.empty{visibility:hidden}.day.active{background:var(--tg-theme-bg-color,#fff);font-weight:700;box-shadow:0 1px 5px rgba(0,0,0,.1);cursor:pointer}.day.free{background:#35b85a;color:#fff}.day.busy{background:#e85d5d;color:#fff}
-.legend{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:13px;opacity:.75}.legend-item{display:flex;align-items:center;gap:6px}.circle{width:12px;height:12px;border-radius:50%}.circle.free{background:#35b85a}.circle.busy{background:#e85d5d}
-.hint{margin-top:20px;font-size:14px;line-height:1.45;opacity:.65}.send{width:100%;border:none;border-radius:14px;padding:15px;margin-top:24px;font-size:17px;font-weight:600;background:var(--tg-theme-button-color,#2481cc);color:var(--tg-theme-button-text-color,#fff)}
-</style>
-</head>
-<body>
-<div id="departmentScreen">
-<div class="title">📅 Возможные даты</div>
-<div class="subtitle">Выберите направление, для которого хотите указать свою доступность.</div>
-<div class="departments">
-<button class="department-button" onclick="openCalendar('classic')">🎼 Классика</button>
-<button class="department-button" onclick="openCalendar('pop')">🎧 Эстрада / неоклассика</button>
-</div></div>
+  <meta charset="UTF-8">
 
-<div id="calendarScreen" class="calendar-screen">
-<button class="back-button" onclick="showDepartments()">◀️ Назад к отделам</button>
-<div id="sectionTitle" class="section-title"></div>
-<div class="month">Сентябрь 2026</div>
-<div class="calendar">
-<div class="weekdays"><div class="weekday">Пн</div><div class="weekday">Вт</div><div class="weekday">Ср</div><div class="weekday">Чт</div><div class="weekday">Пт</div><div class="weekday">Сб</div><div class="weekday">Вс</div></div>
-<div id="days" class="days"></div>
-</div>
-<div class="legend"><div class="legend-item"><span class="circle free"></span>Свободна</div><div class="legend-item"><span class="circle busy"></span>Занята</div></div>
-<div class="hint">Нажмите на выделенную дату, чтобы указать свою доступность. Первое нажатие — свободна, второе — занята.</div>
-<button class="send" onclick="sendDates()">📤 Отправить</button>
-</div>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>Возможные даты</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px 32px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #ffffff;
+      color: #222222;
+    }
+
+    .title {
+      font-size: 27px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.45;
+      opacity: 0.65;
+      margin-bottom: 24px;
+    }
+
+    .departments {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .department-button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: left;
+      font-size: 17px;
+      font-weight: 600;
+      background: #f2f2f2;
+      color: #222222;
+      cursor: pointer;
+    }
+
+    .department-button:active {
+      opacity: 0.7;
+    }
+
+    .calendar-screen {
+      display: none;
+    }
+
+    .back-button {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: #2481cc;
+      cursor: pointer;
+    }
+
+    .section-title {
+      font-size: 23px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .month {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .calendar {
+      background: #f4f4f5;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.55;
+      padding-bottom: 6px;
+    }
+
+    .day-cell {
+      min-height: 58px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 3px;
+    }
+
+    .day {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 16px;
+    }
+
+    .day.empty {
+      visibility: hidden;
+    }
+
+    .day.active {
+      background: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.10);
+      cursor: pointer;
+    }
+
+    .day.free {
+      background: #35b85a;
+      color: white;
+    }
+
+    .day.maybe {
+      background: #f0b429;
+      color: white;
+    }
+
+    .day.busy {
+      background: #e85d5d;
+      color: white;
+    }
+
+    .day-time {
+      font-size: 10px;
+      opacity: 0.65;
+      white-space: nowrap;
+    }
+
+    .hint {
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.45;
+      opacity: 0.65;
+    }
+
+    /* Нижняя панель */
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+
+    .bottom-sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffffff;
+      border-radius: 22px 22px 0 0;
+      padding: 18px 16px 30px;
+      z-index: 11;
+      transform: translateY(100%);
+      transition: transform 0.2s ease;
+    }
+
+    .bottom-sheet.open {
+      transform: translateY(0);
+    }
+
+    .sheet-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .status-button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 8px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .status-free {
+      background: #35b85a;
+      color: white;
+    }
+
+    .status-maybe {
+      background: #f0b429;
+      color: white;
+    }
+
+    .status-busy {
+      background: #e85d5d;
+      color: white;
+    }
+
+    .cancel-button {
+      width: 100%;
+      border: none;
+      background: #f2f2f2;
+      color: #222222;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 16px;
+    }
+
+    .send {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      margin-top: 24px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #2481cc;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="departmentScreen">
+
+    <div class="title">
+      📅 Возможные даты
+    </div>
+
+    <div class="subtitle">
+      Выберите направление.
+    </div>
+
+    <div class="departments">
+
+      <button
+        class="department-button"
+        onclick="openCalendar('classic')"
+      >
+        🎼 Классика
+      </button>
+
+      <button
+        class="department-button"
+        onclick="openCalendar('pop')"
+      >
+        🎧 Эстрада / неоклассика
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="calendarScreen" class="calendar-screen">
+
+    <button
+      class="back-button"
+      onclick="showDepartments()"
+    >
+      ◀️ Назад к направлениям
+    </button>
+
+    <div id="sectionTitle" class="section-title"></div>
+
+    <div class="month">
+      Сентябрь 2026
+    </div>
+
+    <div class="calendar">
+
+      <div class="weekdays">
+        <div class="weekday">Пн</div>
+        <div class="weekday">Вт</div>
+        <div class="weekday">Ср</div>
+        <div class="weekday">Чт</div>
+        <div class="weekday">Пт</div>
+        <div class="weekday">Сб</div>
+        <div class="weekday">Вс</div>
+      </div>
+
+      <div id="days" class="days"></div>
+
+    </div>
+
+    <div class="hint">
+      Нажмите на дату и выберите один вариант:
+      <br>
+      🟢 Могу выступить
+      <br>
+      🟡 Пока не знаю
+      <br>
+      🔴 Не могу выступить
+    </div>
+
+    <button class="send" onclick="sendDates()">
+      📤 Отправить
+    </button>
+
+  </div>
+
+
+  <div
+    id="overlay"
+    class="overlay"
+    onclick="closeSheet()"
+  ></div>
+
+
+  <div
+    id="bottomSheet"
+    class="bottom-sheet"
+  >
+
+    <div
+      id="sheetTitle"
+      class="sheet-title"
+    ></div>
+
+    <button
+      class="status-button status-free"
+      onclick="chooseStatus('free')"
+    >
+      🟢 Могу выступить
+    </button>
+
+    <button
+      class="status-button status-maybe"
+      onclick="chooseStatus('maybe')"
+    >
+      🟡 Пока не знаю
+    </button>
+
+    <button
+      class="status-button status-busy"
+      onclick="chooseStatus('busy')"
+    >
+      🔴 Не могу выступить
+    </button>
+
+    <button
+      class="cancel-button"
+      onclick="closeSheet()"
+    >
+      Отмена
+    </button>
+
+  </div>
+
 
 <script>
-const tg=window.Telegram.WebApp; tg.expand();
-const departments={
-classic:["2026-09-11","2026-09-13","2026-09-18","2026-09-20","2026-09-26","2026-09-27"],
-pop:["2026-09-10","2026-09-12","2026-09-19","2026-09-20","2026-09-25","2026-09-26"]
-};
-let currentDepartment=null; const selected={};
-function showDepartments(){document.getElementById("departmentScreen").style.display="block";document.getElementById("calendarScreen").style.display="none";}
-function openCalendar(department){currentDepartment=department;document.getElementById("departmentScreen").style.display="none";document.getElementById("calendarScreen").style.display="block";document.getElementById("sectionTitle").textContent=department==="classic"?"🎼 Классика":"🎧 Эстрада / неоклассика";drawCalendar(departments[department]);}
-function drawCalendar(activeDates){
-const c=document.getElementById("days"); c.innerHTML="";
-const year=2026,month=8,firstDay=new Date(year,month,1); let startDay=firstDay.getDay(); if(startDay===0)startDay=7;
-const daysInMonth=new Date(year,month+1,0).getDate();
-for(let i=1;i<startDay;i++){const e=document.createElement("div");e.className="day empty";c.appendChild(e);}
-for(let day=1;day<=daysInMonth;day++){
-const e=document.createElement("div");e.className="day";
-const date=year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"); e.textContent=day;
-if(activeDates.includes(date)){e.classList.add("active");if(selected[date])e.classList.add(selected[date]);e.onclick=()=>{
-if(!selected[date]){selected[date]="free";e.classList.add("free")}
-else if(selected[date]==="free"){selected[date]="busy";e.classList.remove("free");e.classList.add("busy")}
-else{delete selected[date];e.classList.remove("busy")}
-};}
-c.appendChild(e);
-}}
-function sendDates(){const result=Object.entries(selected);if(result.length===0){tg.showAlert("Выберите хотя бы одну дату.");return;}tg.showAlert("Вы выбрали "+result.length+" дат.");}
+
+const SUPABASE_FUNCTION =
+  "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
+
+
+let currentDepartment = null;
+let currentEvents = [];
+let currentSelectedDate = null;
+
+const selected = {};
+
+
+function showDepartments() {
+
+  document.getElementById("departmentScreen").style.display = "block";
+
+  document.getElementById("calendarScreen").style.display = "none";
+
+}
+
+
+async function openCalendar(department) {
+
+  currentDepartment = department;
+
+  document.getElementById("departmentScreen").style.display = "none";
+
+  document.getElementById("calendarScreen").style.display = "block";
+
+  const title =
+    department === "classic"
+      ? "🎼 Классика"
+      : "🎧 Эстрада / неоклассика";
+
+  document.getElementById("sectionTitle").textContent = title;
+
+  document.getElementById("days").innerHTML =
+    "<div style='grid-column:1/-1;text-align:center;padding:30px;opacity:.6'>Загрузка…</div>";
+
+
+  try {
+
+    const response = await fetch(
+      SUPABASE_FUNCTION +
+      "?department=" +
+      encodeURIComponent(department)
+    );
+
+
+    if (!response.ok) {
+      throw new Error("Ошибка загрузки");
+    }
+
+
+    const data = await response.json();
+
+    currentEvents = data.events || [];
+
+    drawCalendar(currentEvents);
+
+  } catch (error) {
+
+    document.getElementById("days").innerHTML =
+      "<div style='grid-column:1/-1;text-align:center;padding:30px;color:#d33'>Не удалось загрузить даты.</div>";
+
+  }
+
+}
+
+
+function drawCalendar(events) {
+
+  const daysContainer =
+    document.getElementById("days");
+
+  daysContainer.innerHTML = "";
+
+
+  const year = 2026;
+  const month = 8;
+
+
+  const firstDay =
+    new Date(year, month, 1);
+
+
+  let startDay =
+    firstDay.getDay();
+
+
+  if (startDay === 0) {
+    startDay = 7;
+  }
+
+
+  const daysInMonth =
+    new Date(year, month + 1, 0).getDate();
+
+
+  const eventMap = {};
+
+
+  events.forEach(event => {
+
+    eventMap[event.date] = event;
+
+  });
+
+
+  for (
+    let i = 1;
+    i < startDay;
+    i++
+  ) {
+
+    const emptyCell =
+      document.createElement("div");
+
+    emptyCell.className = "day-cell";
+
+    const empty =
+      document.createElement("div");
+
+    empty.className = "day empty";
+
+    emptyCell.appendChild(empty);
+
+    daysContainer.appendChild(emptyCell);
+
+  }
+
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const cell =
+      document.createElement("div");
+
+    cell.className = "day-cell";
+
+
+    const element =
+      document.createElement("div");
+
+    element.className = "day";
+
+
+    const date =
+      year +
+      "-" +
+      String(month + 1).padStart(2, "0") +
+      "-" +
+      String(day).padStart(2, "0");
+
+
+    element.textContent = day;
+
+
+    const event =
+      eventMap[date];
+
+
+    if (event) {
+
+      element.classList.add("active");
+
+
+      if (selected[date]) {
+        element.classList.add(selected[date]);
+      }
+
+
+      element.onclick = () => {
+
+        currentSelectedDate = date;
+
+        const formattedDate =
+          new Date(
+            year,
+            month,
+            day
+          ).toLocaleDateString(
+            "ru-RU",
+            {
+              day: "numeric",
+              month: "long"
+            }
+          );
+
+
+        document.getElementById("sheetTitle").textContent =
+          formattedDate +
+          (event.time
+            ? " · " + event.time
+            : "");
+
+
+        openSheet();
+
+      };
+
+
+      const time =
+        document.createElement("div");
+
+      time.className = "day-time";
+
+      time.textContent =
+        event.time || "";
+
+      cell.appendChild(element);
+
+      cell.appendChild(time);
+
+    } else {
+
+      cell.appendChild(element);
+
+    }
+
+
+    daysContainer.appendChild(cell);
+
+  }
+
+}
+
+
+function openSheet() {
+
+  document.getElementById("overlay").style.display = "block";
+
+  document.getElementById("bottomSheet").classList.add("open");
+
+}
+
+
+function closeSheet() {
+
+  document.getElementById("bottomSheet").classList.remove("open");
+
+  setTimeout(() => {
+
+    document.getElementById("overlay").style.display = "none";
+
+  }, 200);
+
+}
+
+
+function chooseStatus(status) {
+
+  if (!currentSelectedDate) {
+    return;
+  }
+
+
+  selected[currentSelectedDate] = status;
+
+  closeSheet();
+
+  drawCalendar(currentEvents);
+
+}
+
+
+function sendDates() {
+
+  const result =
+    Object.entries(selected);
+
+
+  if (result.length === 0) {
+
+    alert("Выберите хотя бы одну дату.");
+
+    return;
+
+  }
+
+
+  let text =
+    "Вы выбрали " +
+    result.length +
+    " дат.";
+
+
+  alert(text);
+
+}
+
 </script>
+
 </body>
 </html>
