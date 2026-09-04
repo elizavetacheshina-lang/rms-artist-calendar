@@ -153,6 +153,10 @@ body {
   border-radius: 50%;
 
   font-size: 16px;
+
+  position: relative;
+
+  overflow: hidden;
 }
 
 .day.empty {
@@ -183,6 +187,19 @@ body {
 
 .day.maybe {
   background: #f2c94c;
+  color: #222222;
+}
+
+
+/*
+  Составной цвет даты.
+
+  Если на одной дате несколько концертов,
+  круг делится пропорционально количеству
+  концертов и их статусам.
+*/
+
+.day.multi-status {
   color: #222222;
 }
 
@@ -511,7 +528,7 @@ body {
   </div>
 
   <div class="subtitle">
-    Выберите направление.
+    Выберите направление:
   </div>
 
   <div class="departments">
@@ -609,7 +626,7 @@ body {
 
 
   <div class="hint">
-    Нажмите на выделенную дату, чтобы указать свою доступность.
+    Нажмите на дату, чтобы выбрать занятость
   </div>
 
 
@@ -730,19 +747,135 @@ let activeEventId = null;
 
 
 /*
-  Здесь будут храниться ответы артиста.
+  Ответы теперь разделены по отделам.
 
   Например:
 
-  {
-    13: "green",
-    14: "red"
+  availabilityByDepartment = {
+    classic: {
+      13: "green",
+      14: "red"
+    },
+
+    pop: {
+      20: "yellow"
+    }
   }
 
-  где 13 и 14 — event_id.
+  Благодаря этому классика и эстрада
+  больше не влияют друг на друга.
 */
 
-const availability = {};
+const availabilityByDepartment = {
+
+  classic: {},
+
+  pop: {}
+
+};
+
+
+/*
+  Отдельно запоминаем,
+  был ли уже отправлен каждый отдел.
+*/
+
+const sentByDepartment = {
+
+  classic: false,
+
+  pop: false
+
+};
+
+
+/* ========================================================= */
+/* ПОЛУЧИТЬ ТЕКУЩИЕ ОТВЕТЫ */
+/* ========================================================= */
+
+function getCurrentAvailability() {
+
+  if (!currentDepartment) {
+
+    return {};
+
+  }
+
+
+  return availabilityByDepartment[
+    currentDepartment
+  ];
+
+}
+
+
+/* ========================================================= */
+/* ОБНОВИТЬ СОСТОЯНИЕ КНОПКИ */
+/* ========================================================= */
+
+function updateSendButton() {
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+
+  if (!currentDepartment) {
+
+    return;
+
+  }
+
+
+  const availability =
+    getCurrentAvailability();
+
+
+  const hasAvailability =
+    Object.keys(
+      availability
+    ).length > 0;
+
+
+  const wasSent =
+    sentByDepartment[
+      currentDepartment
+    ];
+
+
+  /*
+    Если этот отдел уже отправлен
+    и после отправки ничего не менялось —
+    показываем "Отправлено".
+  */
+
+  if (wasSent) {
+
+    sendButton.disabled =
+      true;
+
+    sendButton.textContent =
+      "✅ Отправлено";
+
+    return;
+
+  }
+
+
+  /*
+    Если ещё ничего не выбрано,
+    кнопка остаётся обычной,
+    но отправить будет нельзя.
+  */
+
+  sendButton.disabled =
+    !hasAvailability;
+
+  sendButton.textContent =
+    "📤 Отправить";
+
+}
 
 
 /* ========================================================= */
@@ -790,6 +923,9 @@ async function openCalendar(department) {
     .getElementById("sectionTitle")
     .textContent =
       departmentLabels[department];
+
+
+  updateSendButton();
 
 
   document
@@ -846,6 +982,221 @@ async function openCalendar(department) {
         '</div>';
 
   }
+
+}
+
+
+/* ========================================================= */
+/* ЦВЕТА ДЛЯ СОСТАВНОЙ ДАТЫ */
+/* ========================================================= */
+
+function getStatusColor(status) {
+
+  if (status === "green") {
+
+    return "#35b85a";
+
+  }
+
+
+  if (status === "yellow") {
+
+    return "#f2c94c";
+
+  }
+
+
+  if (status === "red") {
+
+    return "#e85d5d";
+
+  }
+
+
+  return "#ffffff";
+
+}
+
+
+/* ========================================================= */
+/* ПРИМЕНИТЬ ЦВЕТ ДАТЫ */
+/* ========================================================= */
+
+function applyDayColor(
+  element,
+  dayEvents
+) {
+
+  const availability =
+    getCurrentAvailability();
+
+
+  /*
+    Один концерт.
+    Используем обычный цвет.
+  */
+
+  if (dayEvents.length === 1) {
+
+    const status =
+      availability[
+        dayEvents[0].id
+      ];
+
+
+    element.style.background =
+      "";
+
+
+    element.classList.remove(
+      "multi-status"
+    );
+
+
+    if (status === "green") {
+
+      element.classList.add(
+        "free"
+      );
+
+    }
+
+
+    if (status === "yellow") {
+
+      element.classList.add(
+        "maybe"
+      );
+
+    }
+
+
+    if (status === "red") {
+
+      element.classList.add(
+        "busy"
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+  /*
+    Несколько концертов.
+
+    Считаем каждый концерт отдельным
+    сектором круга.
+  */
+
+  const colors =
+    dayEvents.map(
+      event =>
+        getStatusColor(
+          availability[event.id]
+        )
+    );
+
+
+  /*
+    Если статусы у всех концертов одинаковые,
+    весь круг становится одного цвета.
+  */
+
+  const allSame =
+    colors.every(
+      color =>
+        color === colors[0]
+    );
+
+
+  if (allSame) {
+
+    element.style.background =
+      colors[0];
+
+    element.classList.remove(
+      "multi-status"
+    );
+
+    /*
+      Если цвет зелёный или красный —
+      текст белый.
+    */
+
+    if (
+      colors[0] === "#35b85a" ||
+      colors[0] === "#e85d5d"
+    ) {
+
+      element.style.color =
+        "#ffffff";
+
+    } else {
+
+      element.style.color =
+        "#222222";
+
+    }
+
+    return;
+
+  }
+
+
+  /*
+    Если цвета разные,
+    делим круг на равные части.
+
+    Например, два концерта:
+
+    зелёный + красный
+
+    = 50% зелёного
+    + 50% красного
+  */
+
+  const segmentSize =
+    100 / colors.length;
+
+
+  const segments = [];
+
+
+  colors.forEach(
+    (color, index) => {
+
+      const start =
+        index *
+        segmentSize;
+
+      const end =
+        (index + 1) *
+        segmentSize;
+
+
+      segments.push(
+        `${color} ${start}% ${end}%`
+      );
+
+    }
+  );
+
+
+  element.style.background =
+    `conic-gradient(${segments.join(", ")})`;
+
+
+  element.style.color =
+    "#222222";
+
+
+  element.classList.add(
+    "multi-status"
+  );
 
 }
 
@@ -971,55 +1322,20 @@ function drawCalendar() {
 
 
       /*
-        Если концерт только один,
-        цвет показываем прямо
-        на календаре.
+        Применяем цвет.
+
+        Для одного концерта —
+        обычный цвет.
+
+        Для нескольких —
+        составной круг.
       */
 
-      if (dayEvents.length === 1) {
+      applyDayColor(
+        element,
+        dayEvents
+      );
 
-        const status =
-          availability[
-            dayEvents[0].id
-          ];
-
-
-        if (status === "green") {
-
-          element.classList.add(
-            "free"
-          );
-
-        }
-
-
-        if (status === "yellow") {
-
-          element.classList.add(
-            "maybe"
-          );
-
-        }
-
-
-        if (status === "red") {
-
-          element.classList.add(
-            "busy"
-          );
-
-        }
-
-      }
-
-
-      /*
-        Если концертов несколько,
-        дату оставляем нейтральной.
-
-        При нажатии откроется
-        список концертов.
-      */
 
       element.onclick =
         () => openSheet(date);
@@ -1089,7 +1405,7 @@ function openSheet(date) {
     document
       .getElementById("sheetSubtitle")
       .textContent =
-        formatEventInfo(event);
+      formatEventInfo(event);
 
 
     showStatusButtons();
@@ -1121,6 +1437,10 @@ function openSheet(date) {
 
 
   content.innerHTML = "";
+
+
+  const availability =
+    getCurrentAvailability();
 
 
   dayEvents.forEach(
@@ -1304,6 +1624,16 @@ function showStatusButtons() {
     );
 
 
+  const availability =
+    getCurrentAvailability();
+
+
+  const currentStatus =
+    availability[
+      activeEventId
+    ];
+
+
   content.innerHTML = `
 
     <button
@@ -1347,13 +1677,31 @@ function chooseStatus(status) {
   }
 
 
+  const availability =
+    getCurrentAvailability();
+
+
   availability[
     activeEventId
   ] =
     status;
 
 
+  /*
+    Если мы меняем данные после отправки,
+    этот отдел снова считается
+    требующим отправки.
+  */
+
+  sentByDepartment[
+    currentDepartment
+  ] =
+    false;
+
+
   drawCalendar();
+
+  updateSendButton();
 
 
   closeSheet();
@@ -1396,8 +1744,24 @@ function closeSheet() {
 async function sendAvailability() {
 
   /*
+    Запоминаем именно текущий отдел.
+  */
+
+  if (!currentDepartment) {
+
+    return;
+
+  }
+
+
+  const availability =
+    getCurrentAvailability();
+
+
+  /*
     Проверяем, выбрал ли артист
-    хотя бы один концерт.
+    хотя бы один концерт
+    именно в этом отделе.
   */
 
   if (
@@ -1428,10 +1792,6 @@ async function sendAvailability() {
   /*
     Получаем initData именно
     от Telegram.
-
-    Именно это позволяет серверу
-    понять, какой артист отправляет
-    данные.
   */
 
   const initData =
@@ -1471,25 +1831,13 @@ async function sendAvailability() {
 
 
   /*
-    Превращаем объект:
+    ВАЖНО:
 
-    {
-      13: "green",
-      14: "red"
-    }
+    Отправляем только ответы
+    текущего отдела.
 
-    в массив:
-
-    [
-      {
-        event_id: 13,
-        status: "green"
-      },
-      {
-        event_id: 14,
-        status: "red"
-      }
-    ]
+    Классика и эстрада
+    теперь полностью независимы.
   */
 
   const availabilityArray =
@@ -1575,11 +1923,17 @@ async function sendAvailability() {
 
 
     /*
-      Всё получилось.
+      Считаем отправленным
+      только текущий отдел.
     */
 
-    sendButton.textContent =
-      "✅ Отправлено";
+    sentByDepartment[
+      currentDepartment
+    ] =
+      true;
+
+
+    updateSendButton();
 
 
     if (tg) {
