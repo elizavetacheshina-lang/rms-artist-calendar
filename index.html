@@ -2,11 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
-  <title>Возможные даты</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>RMS — Возможные даты</title>
 
   <style>
     * {
@@ -15,23 +12,31 @@
 
     body {
       margin: 0;
-      padding: 24px 16px 32px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #ffffff;
-      color: #222222;
+      background: #f7f7f8;
+      color: #222;
     }
 
-    .title {
-      font-size: 27px;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 16px 120px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0 0 8px;
     }
 
     .subtitle {
+      color: #777;
       font-size: 15px;
-      line-height: 1.45;
-      opacity: 0.65;
       margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    button {
+      font-family: inherit;
     }
 
     .departments {
@@ -43,567 +48,660 @@
     .department-button {
       width: 100%;
       border: none;
-      border-radius: 14px;
+      border-radius: 18px;
       padding: 18px;
-      text-align: left;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
       font-size: 17px;
       font-weight: 600;
-      background: #f2f2f4;
-      color: #222;
+      text-align: left;
       cursor: pointer;
     }
 
     .department-button:active {
-      transform: scale(0.99);
+      transform: scale(0.98);
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
 
     .back-button {
       border: none;
-      background: none;
-      padding: 0;
-      margin-bottom: 28px;
-      color: #2481cc;
-      font-size: 17px;
+      background: transparent;
+      color: #555;
+      font-size: 15px;
+      padding: 6px 0;
       cursor: pointer;
     }
 
-    .calendar-title {
-      font-size: 27px;
+    .month-title {
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 28px;
+      margin-bottom: 16px;
     }
 
     .calendar {
-      background: #f5f5f7;
-      border-radius: 28px;
-      padding: 20px 12px 22px;
-    }
-
-    .weekdays,
-    .days {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
+      gap: 7px;
     }
 
     .weekday {
       text-align: center;
-      color: #8a8a8f;
-      font-size: 15px;
-      padding-bottom: 12px;
+      font-size: 11px;
+      color: #999;
+      padding-bottom: 5px;
     }
 
     .day {
-      min-height: 82px;
+      min-height: 64px;
+      border: none;
+      border-radius: 13px;
+      background: #e9e9eb;
+      padding: 7px 3px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      position: relative;
-      padding-top: 7px;
+      justify-content: center;
+      cursor: default;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .day.empty {
+      background: transparent;
+    }
+
+    .day.active {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+    }
+
+    .day.active:active {
+      transform: scale(0.95);
+    }
+
+    .day.green {
+      background: #dff3e4;
+    }
+
+    .day.yellow {
+      background: #fff1bf;
+    }
+
+    .day.red {
+      background: #f7dada;
     }
 
     .day-number {
-      width: 58px;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      font-size: 19px;
-      font-weight: 500;
-    }
-
-    .day.available .day-number {
-      background: #ffffff;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      cursor: pointer;
-    }
-
-    .day.available.selected-green .day-number {
-      background: #34c759;
-      color: white;
-      font-weight: 700;
-    }
-
-    .day.available.selected-yellow .day-number {
-      background: #ffd60a;
-      color: #222;
-      font-weight: 700;
-    }
-
-    .day.available.selected-red .day-number {
-      background: #ff6b6b;
-      color: white;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
     }
 
     .day-time {
-      margin-top: 5px;
-      font-size: 14px;
+      margin-top: 4px;
+      font-size: 10px;
       color: #777;
-      line-height: 1.15;
-      text-align: center;
     }
 
     .day-city {
-      margin-top: 3px;
-      font-size: 12px;
-      color: #777;
-      text-align: center;
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
     }
 
     .legend {
-      margin-top: 28px;
-      font-size: 16px;
-      line-height: 1.7;
-      color: #666;
+      margin-top: 22px;
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .legend-row {
+    .legend-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
+      font-size: 14px;
+      margin: 7px 0;
     }
 
     .legend-dot {
-      width: 20px;
-      height: 20px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
-      flex: 0 0 20px;
+      flex-shrink: 0;
     }
 
-    .green {
-      background: #34c759;
+    .dot-green {
+      background: #6fc586;
     }
 
-    .yellow {
-      background: #ffd60a;
+    .dot-yellow {
+      background: #e7bd38;
     }
 
-    .red {
-      background: #ff6b6b;
-    }
-
-    .instruction {
-      margin-top: 24px;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #777;
+    .dot-red {
+      background: #df7777;
     }
 
     .send-button {
-      width: 100%;
-      margin-top: 28px;
-      padding: 20px;
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      max-width: 488px;
+      margin: auto;
       border: none;
-      border-radius: 24px;
-      background: #2481cc;
+      border-radius: 16px;
+      padding: 16px;
+      background: #222;
       color: white;
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.18);
     }
 
     .send-button:active {
-      transform: scale(0.99);
+      transform: scale(0.98);
     }
 
     .hidden {
-      display: none;
+      display: none !important;
+    }
+
+    /* Нижнее меню */
+
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .sheet {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      border-radius: 22px 22px 0 0;
+      padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
+      box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+      animation: slideUp 0.18s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .sheet-handle {
+      width: 42px;
+      height: 5px;
+      border-radius: 10px;
+      background: #ddd;
+      margin: 0 auto 16px;
+    }
+
+    .sheet-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .status-button {
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      padding: 15px;
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .status-green {
+      background: #dff3e4;
+    }
+
+    .status-yellow {
+      background: #fff1bf;
+    }
+
+    .status-red {
+      background: #f7dada;
+    }
+
+    .cancel-button {
+      width: 100%;
+      border: none;
+      background: #f2f2f3;
+      border-radius: 15px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 15px;
+      cursor: pointer;
     }
 
     .loading {
-      font-size: 17px;
-      color: #777;
-      padding: 20px 0;
-    }
-
-    .error {
-      color: #d93025;
-      font-size: 16px;
-      line-height: 1.5;
-      padding: 20px 0;
+      text-align: center;
+      color: #888;
+      padding: 30px 0;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ВЫБОР ОТДЕЛА -->
-  <section id="departmentScreen">
-    <div class="title">📅 Возможные даты</div>
+  <div class="app">
 
-    <div class="subtitle">
-      Выберите направление.
-    </div>
-
-    <div class="departments">
-      <button
-        class="department-button"
-        onclick="openDepartment('classic')"
-      >
-        🎼 Классика
-      </button>
-
-      <button
-        class="department-button"
-        onclick="openDepartment('pop')"
-      >
-        🎧 Эстрада / неоклассика
-      </button>
-    </div>
-  </section>
-
-
-  <!-- КАЛЕНДАРЬ -->
-  <section id="calendarScreen" class="hidden">
-
-    <button class="back-button" onclick="backToDepartments()">
-      ◀️ Назад к отделам
-    </button>
-
-    <div class="title" id="departmentTitle"></div>
-
-    <div class="calendar-title">
-      Сентябрь 2026
-    </div>
-
-    <div id="loading" class="loading">
-      Загружаем даты…
-    </div>
-
-    <div id="calendarContent" class="hidden">
-
-      <div class="calendar">
-
-        <div class="weekdays">
-          <div class="weekday">Пн</div>
-          <div class="weekday">Вт</div>
-          <div class="weekday">Ср</div>
-          <div class="weekday">Чт</div>
-          <div class="weekday">Пт</div>
-          <div class="weekday">Сб</div>
-          <div class="weekday">Вс</div>
-        </div>
-
-        <div id="days" class="days"></div>
-
+    <div id="departmentScreen">
+      <h1>Возможные даты</h1>
+      <div class="subtitle">
+        Выберите направление.
       </div>
+
+      <div class="departments">
+        <button class="department-button" onclick="openDepartment('classic')">
+          🎼 Классика
+        </button>
+
+        <button class="department-button" onclick="openDepartment('pop')">
+          🎧 Эстрада / неоклассика
+        </button>
+      </div>
+    </div>
+
+
+    <div id="calendarScreen" class="hidden">
+
+      <div class="calendar-header">
+        <button class="back-button" onclick="backToDepartments()">
+          ← Назад
+        </button>
+      </div>
+
+      <div id="departmentTitle" class="month-title"></div>
+
+      <div class="month-title">
+        Сентябрь 2026
+      </div>
+
+      <div id="calendar" class="calendar"></div>
 
       <div class="legend">
-
-        <div class="legend-row">
-          <span class="legend-dot green"></span>
-          <span>Могу выступить</span>
+        <div class="legend-item">
+          <span class="legend-dot dot-green"></span>
+          Могу выступить
         </div>
 
-        <div class="legend-row">
-          <span class="legend-dot yellow"></span>
-          <span>Пока не знаю</span>
+        <div class="legend-item">
+          <span class="legend-dot dot-yellow"></span>
+          Пока не знаю
         </div>
 
-        <div class="legend-row">
-          <span class="legend-dot red"></span>
-          <span>Не могу выступить</span>
+        <div class="legend-item">
+          <span class="legend-dot dot-red"></span>
+          Не могу выступить
         </div>
-
       </div>
 
-      <div class="instruction">
-        Нажмите на дату и выберите один вариант:
+    </div>
+
+  </div>
+
+
+  <button
+    id="sendButton"
+    class="send-button hidden"
+    onclick="sendAvailability()"
+  >
+    📤 Отправить
+  </button>
+
+
+  <!-- Нижнее меню выбора статуса -->
+
+  <div
+    id="sheetOverlay"
+    class="sheet-overlay hidden"
+    onclick="closeSheet(event)"
+  >
+
+    <div class="sheet" onclick="event.stopPropagation()">
+
+      <div class="sheet-handle"></div>
+
+      <div id="sheetTitle" class="sheet-title">
+        Выберите статус
       </div>
 
-      <button class="send-button" onclick="sendAvailability()">
-        📤 Отправить
+      <button
+        class="status-button status-green"
+        onclick="selectStatus('green')"
+      >
+        🟢 Могу выступить
+      </button>
+
+      <button
+        class="status-button status-yellow"
+        onclick="selectStatus('yellow')"
+      >
+        🟡 Пока не знаю
+      </button>
+
+      <button
+        class="status-button status-red"
+        onclick="selectStatus('red')"
+      >
+        🔴 Не могу выступить
+      </button>
+
+      <button
+        class="cancel-button"
+        onclick="closeSheet()"
+      >
+        Отмена
       </button>
 
     </div>
 
-    <div id="error" class="error hidden"></div>
-
-  </section>
+  </div>
 
 
   <script>
 
-    const API_URL =
+    const SUPABASE_FUNCTION =
       "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
 
     let currentDepartment = null;
     let events = [];
-    let selectedDates = {};
+    let selectedDate = null;
+
+    const availability = {};
 
 
     async function openDepartment(department) {
 
       currentDepartment = department;
 
-      document
-        .getElementById("departmentScreen")
+      document.getElementById("departmentScreen")
         .classList.add("hidden");
 
-      document
-        .getElementById("calendarScreen")
+      document.getElementById("calendarScreen")
         .classList.remove("hidden");
 
-      document.getElementById("loading").classList.remove("hidden");
-      document.getElementById("calendarContent").classList.add("hidden");
-      document.getElementById("error").classList.add("hidden");
+      document.getElementById("sendButton")
+        .classList.remove("hidden");
 
       document.getElementById("departmentTitle").textContent =
         department === "classic"
           ? "🎼 Классика"
           : "🎧 Эстрада / неоклассика";
 
-      selectedDates = {};
+      document.getElementById("calendar").innerHTML =
+        '<div class="loading">Загружаем даты…</div>';
 
       try {
 
         const response = await fetch(
-          API_URL + "?department=" + encodeURIComponent(department)
+          SUPABASE_FUNCTION +
+          "?department=" +
+          encodeURIComponent(department)
         );
 
-        if (!response.ok) {
-          throw new Error("Ошибка загрузки");
-        }
-
         const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Ошибка загрузки");
+        }
 
         events = data.events || [];
 
         renderCalendar();
 
-        document.getElementById("loading").classList.add("hidden");
-        document.getElementById("calendarContent").classList.remove("hidden");
-
       } catch (error) {
 
-        document.getElementById("loading").classList.add("hidden");
+        console.error(error);
 
-        const errorBlock = document.getElementById("error");
-
-        errorBlock.textContent =
-          "Не удалось загрузить даты. Попробуйте ещё раз.";
-
-        errorBlock.classList.remove("hidden");
+        document.getElementById("calendar").innerHTML =
+          '<div class="loading">Не удалось загрузить даты.</div>';
       }
-    }
-
-
-    function backToDepartments() {
-
-      document
-        .getElementById("calendarScreen")
-        .classList.add("hidden");
-
-      document
-        .getElementById("departmentScreen")
-        .classList.remove("hidden");
-
-      selectedDates = {};
     }
 
 
     function renderCalendar() {
 
-      const daysContainer = document.getElementById("days");
+      const calendar =
+        document.getElementById("calendar");
 
-      daysContainer.innerHTML = "";
+      calendar.innerHTML = "";
 
-      /*
-        1 сентября 2026 года — вторник.
-        Поэтому перед единицей ставим один пустой день.
-      */
+      const weekdays = [
+        "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"
+      ];
 
-      daysContainer.appendChild(createEmptyDay());
+      weekdays.forEach(day => {
+
+        const el = document.createElement("div");
+
+        el.className = "weekday";
+        el.textContent = day;
+
+        calendar.appendChild(el);
+      });
 
 
-      for (let day = 1; day <= 30; day++) {
+      const year = 2026;
+      const month = 8; // сентябрь, потому что январь = 0
 
-        const dateString =
-          "2026-09-" + String(day).padStart(2, "0");
+      const firstDay =
+        new Date(year, month, 1).getDay();
 
-        const event = events.find(
-          item => item.date === dateString
-        );
+      const mondayBasedFirstDay =
+        firstDay === 0 ? 6 : firstDay - 1;
 
-        const dayElement = document.createElement("div");
+      for (
+        let i = 0;
+        i < mondayBasedFirstDay;
+        i++
+      ) {
 
-        dayElement.className = "day";
+        const empty = document.createElement("div");
 
-        const numberElement =
-          document.createElement("div");
+        empty.className = "day empty";
 
-        numberElement.className = "day-number";
+        calendar.appendChild(empty);
+      }
 
-        numberElement.textContent = day;
 
-        dayElement.appendChild(numberElement);
+      const daysInMonth =
+        new Date(year, month + 1, 0).getDate();
+
+
+      for (
+        let dayNumber = 1;
+        dayNumber <= daysInMonth;
+        dayNumber++
+      ) {
+
+        const date =
+          `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
+
+        const event =
+          events.find(e => e.date === date);
+
+
+        const day = document.createElement("button");
+
+        day.className = "day";
 
 
         if (event) {
 
-          dayElement.classList.add("available");
+          day.classList.add("active");
 
-          numberElement.addEventListener(
-            "click",
-            () => chooseDate(dateString)
-          );
+          const status =
+            availability[date];
 
-
-          const timeElement =
-            document.createElement("div");
-
-          timeElement.className = "day-time";
-
-          timeElement.textContent =
-            formatTime(event.time);
-
-          dayElement.appendChild(timeElement);
-
-
-          /*
-            Москва показывается только тогда,
-            когда city действительно указан в базе.
-          */
-
-          if (event.city) {
-
-            const cityElement =
-              document.createElement("div");
-
-            cityElement.className = "day-city";
-
-            cityElement.textContent =
-              event.city;
-
-            dayElement.appendChild(cityElement);
+          if (status) {
+            day.classList.add(status);
           }
 
+          day.onclick = () => openSheet(date);
 
-          applySelectedState(
-            dayElement,
-            dateString
-          );
         }
 
-        daysContainer.appendChild(dayElement);
+
+        const number =
+          document.createElement("div");
+
+        number.className = "day-number";
+        number.textContent = dayNumber;
+
+        day.appendChild(number);
+
+
+        if (event && event.time) {
+
+          const time =
+            document.createElement("div");
+
+          time.className = "day-time";
+          time.textContent = event.time;
+
+          day.appendChild(time);
+        }
+
+
+        if (event && event.city) {
+
+          const city =
+            document.createElement("div");
+
+          city.className = "day-city";
+          city.textContent = event.city;
+
+          day.appendChild(city);
+        }
+
+
+        calendar.appendChild(day);
       }
+
     }
 
 
-    function createEmptyDay() {
+    function openSheet(date) {
 
-      const empty = document.createElement("div");
+      selectedDate = date;
 
-      empty.className = "day";
+      const event =
+        events.find(e => e.date === date);
 
-      return empty;
-    }
+      let title =
+        formatDate(date);
 
-
-    function formatTime(time) {
-
-      if (!time) return "";
-
-      return String(time).slice(0, 5);
-    }
-
-
-    function chooseDate(date) {
-
-      /*
-        Цикл:
-        первое нажатие → могу выступить
-        второе → пока не знаю
-        третье → не могу выступить
-        четвёртое → снова без отметки
-      */
-
-      const current =
-        selectedDates[date] || null;
-
-      if (!current) {
-        selectedDates[date] = "green";
-      } else if (current === "green") {
-        selectedDates[date] = "yellow";
-      } else if (current === "yellow") {
-        selectedDates[date] = "red";
-      } else {
-        delete selectedDates[date];
+      if (event && event.city) {
+        title += " · " + event.city;
       }
+
+      document.getElementById("sheetTitle").textContent =
+        title;
+
+      document.getElementById("sheetOverlay")
+        .classList.remove("hidden");
+    }
+
+
+    function selectStatus(status) {
+
+      if (!selectedDate) return;
+
+      availability[selectedDate] = status;
+
+      closeSheet();
 
       renderCalendar();
     }
 
 
-    function applySelectedState(
-      element,
-      date
-    ) {
+    function closeSheet(event) {
 
-      const state = selectedDates[date];
-
-      if (state === "green") {
-        element.classList.add("selected-green");
+      if (
+        event &&
+        event.target !==
+        document.getElementById("sheetOverlay")
+      ) {
+        return;
       }
 
-      if (state === "yellow") {
-        element.classList.add("selected-yellow");
-      }
+      document.getElementById("sheetOverlay")
+        .classList.add("hidden");
 
-      if (state === "red") {
-        element.classList.add("selected-red");
-      }
+      selectedDate = null;
+    }
+
+
+    function backToDepartments() {
+
+      document.getElementById("calendarScreen")
+        .classList.add("hidden");
+
+      document.getElementById("sendButton")
+        .classList.add("hidden");
+
+      document.getElementById("departmentScreen")
+        .classList.remove("hidden");
+
+      events = [];
+      currentDepartment = null;
+    }
+
+
+    function formatDate(date) {
+
+      const [year, month, day] =
+        date.split("-");
+
+      return `${day}.${month}.${year}`;
     }
 
 
     function sendAvailability() {
 
-      const selected = Object.entries(selectedDates);
-
-      if (selected.length === 0) {
+      if (
+        Object.keys(availability).length === 0
+      ) {
 
         alert(
-          "Выберите хотя бы одну дату."
+          "Сначала укажите доступность хотя бы для одной даты."
         );
 
         return;
       }
 
-
-      const result = selected.map(
-        ([date, status]) => {
-
-          let text = "";
-
-          if (status === "green") {
-            text = "Могу выступить";
-          }
-
-          if (status === "yellow") {
-            text = "Пока не знаю";
-          }
-
-          if (status === "red") {
-            text = "Не могу выступить";
-          }
-
-          return date + ": " + text;
-        }
+      console.log(
+        "Готовим отправку:",
+        availability
       );
 
-
-      /*
-        Пока только тестируем интерфейс.
-        На следующем этапе подключим отправку
-        непосредственно в таблицу availability.
-      */
-
       alert(
-        "Готово!\n\n" +
-        result.join("\n")
+        "Готово! На следующем этапе подключим сохранение ответов в RMS."
       );
     }
 
