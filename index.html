@@ -2,12 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
-
   <title>Возможные даты</title>
 
   <style>
@@ -45,635 +43,571 @@
     .department-button {
       width: 100%;
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 18px;
       text-align: left;
       font-size: 17px;
       font-weight: 600;
-      background: #f2f2f2;
-      color: #222222;
+      background: #f2f2f4;
+      color: #222;
       cursor: pointer;
     }
 
     .department-button:active {
-      opacity: 0.7;
-    }
-
-    .calendar-screen {
-      display: none;
+      transform: scale(0.99);
     }
 
     .back-button {
       border: none;
-      background: transparent;
+      background: none;
       padding: 0;
-      margin-bottom: 20px;
-      font-size: 15px;
+      margin-bottom: 28px;
       color: #2481cc;
+      font-size: 17px;
       cursor: pointer;
     }
 
-    .section-title {
-      font-size: 23px;
+    .calendar-title {
+      font-size: 27px;
       font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .month {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 14px;
+      margin-bottom: 28px;
     }
 
     .calendar {
-      background: #f4f4f5;
-      border-radius: 18px;
-      padding: 14px;
+      background: #f5f5f7;
+      border-radius: 28px;
+      padding: 20px 12px 22px;
     }
 
     .weekdays,
     .days {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
+      gap: 4px;
     }
 
     .weekday {
       text-align: center;
-      font-size: 12px;
-      opacity: 0.55;
-      padding-bottom: 6px;
+      color: #8a8a8f;
+      font-size: 15px;
+      padding-bottom: 12px;
     }
 
-    .day-cell {
-      min-height: 58px;
+    .day {
+      min-height: 82px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      gap: 3px;
+      position: relative;
+      padding-top: 7px;
     }
 
-    .day {
-      width: 38px;
-      height: 38px;
+    .day-number {
+      width: 58px;
+      height: 58px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      font-size: 16px;
+      font-size: 19px;
+      font-weight: 500;
     }
 
-    .day.empty {
-      visibility: hidden;
-    }
-
-    .day.active {
+    .day.available .day-number {
       background: #ffffff;
-      font-weight: 700;
-      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.10);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       cursor: pointer;
     }
 
-    .day.free {
-      background: #35b85a;
+    .day.available.selected-green .day-number {
+      background: #34c759;
       color: white;
+      font-weight: 700;
     }
 
-    .day.maybe {
-      background: #f0b429;
-      color: white;
+    .day.available.selected-yellow .day-number {
+      background: #ffd60a;
+      color: #222;
+      font-weight: 700;
     }
 
-    .day.busy {
-      background: #e85d5d;
+    .day.available.selected-red .day-number {
+      background: #ff6b6b;
       color: white;
+      font-weight: 700;
     }
 
     .day-time {
-      font-size: 10px;
-      opacity: 0.65;
-      white-space: nowrap;
-    }
-
-    .hint {
-      margin-top: 20px;
+      margin-top: 5px;
       font-size: 14px;
-      line-height: 1.45;
-      opacity: 0.65;
-    }
-
-    /* Нижняя панель */
-
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 10;
-    }
-
-    .bottom-sheet {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #ffffff;
-      border-radius: 22px 22px 0 0;
-      padding: 18px 16px 30px;
-      z-index: 11;
-      transform: translateY(100%);
-      transition: transform 0.2s ease;
-    }
-
-    .bottom-sheet.open {
-      transform: translateY(0);
-    }
-
-    .sheet-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
+      color: #777;
+      line-height: 1.15;
       text-align: center;
     }
 
-    .status-button {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 16px;
-      margin-top: 8px;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
+    .day-city {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #777;
+      text-align: center;
     }
 
-    .status-free {
-      background: #35b85a;
-      color: white;
-    }
-
-    .status-maybe {
-      background: #f0b429;
-      color: white;
-    }
-
-    .status-busy {
-      background: #e85d5d;
-      color: white;
-    }
-
-    .cancel-button {
-      width: 100%;
-      border: none;
-      background: #f2f2f2;
-      color: #222222;
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 12px;
+    .legend {
+      margin-top: 28px;
       font-size: 16px;
+      line-height: 1.7;
+      color: #666;
     }
 
-    .send {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 15px;
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex: 0 0 20px;
+    }
+
+    .green {
+      background: #34c759;
+    }
+
+    .yellow {
+      background: #ffd60a;
+    }
+
+    .red {
+      background: #ff6b6b;
+    }
+
+    .instruction {
       margin-top: 24px;
-      font-size: 17px;
-      font-weight: 600;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #777;
+    }
+
+    .send-button {
+      width: 100%;
+      margin-top: 28px;
+      padding: 20px;
+      border: none;
+      border-radius: 24px;
       background: #2481cc;
       color: white;
+      font-size: 22px;
+      font-weight: 700;
       cursor: pointer;
+    }
+
+    .send-button:active {
+      transform: scale(0.99);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .loading {
+      font-size: 17px;
+      color: #777;
+      padding: 20px 0;
+    }
+
+    .error {
+      color: #d93025;
+      font-size: 16px;
+      line-height: 1.5;
+      padding: 20px 0;
     }
   </style>
 </head>
 
 <body>
 
-  <div id="departmentScreen">
-
-    <div class="title">
-      📅 Возможные даты
-    </div>
+  <!-- ВЫБОР ОТДЕЛА -->
+  <section id="departmentScreen">
+    <div class="title">📅 Возможные даты</div>
 
     <div class="subtitle">
       Выберите направление.
     </div>
 
     <div class="departments">
-
       <button
         class="department-button"
-        onclick="openCalendar('classic')"
+        onclick="openDepartment('classic')"
       >
         🎼 Классика
       </button>
 
       <button
         class="department-button"
-        onclick="openCalendar('pop')"
+        onclick="openDepartment('pop')"
       >
         🎧 Эстрада / неоклассика
+      </button>
+    </div>
+  </section>
+
+
+  <!-- КАЛЕНДАРЬ -->
+  <section id="calendarScreen" class="hidden">
+
+    <button class="back-button" onclick="backToDepartments()">
+      ◀️ Назад к отделам
+    </button>
+
+    <div class="title" id="departmentTitle"></div>
+
+    <div class="calendar-title">
+      Сентябрь 2026
+    </div>
+
+    <div id="loading" class="loading">
+      Загружаем даты…
+    </div>
+
+    <div id="calendarContent" class="hidden">
+
+      <div class="calendar">
+
+        <div class="weekdays">
+          <div class="weekday">Пн</div>
+          <div class="weekday">Вт</div>
+          <div class="weekday">Ср</div>
+          <div class="weekday">Чт</div>
+          <div class="weekday">Пт</div>
+          <div class="weekday">Сб</div>
+          <div class="weekday">Вс</div>
+        </div>
+
+        <div id="days" class="days"></div>
+
+      </div>
+
+      <div class="legend">
+
+        <div class="legend-row">
+          <span class="legend-dot green"></span>
+          <span>Могу выступить</span>
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-dot yellow"></span>
+          <span>Пока не знаю</span>
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-dot red"></span>
+          <span>Не могу выступить</span>
+        </div>
+
+      </div>
+
+      <div class="instruction">
+        Нажмите на дату и выберите один вариант:
+      </div>
+
+      <button class="send-button" onclick="sendAvailability()">
+        📤 Отправить
       </button>
 
     </div>
 
-  </div>
+    <div id="error" class="error hidden"></div>
+
+  </section>
 
 
-  <div id="calendarScreen" class="calendar-screen">
+  <script>
 
-    <button
-      class="back-button"
-      onclick="showDepartments()"
-    >
-      ◀️ Назад к направлениям
-    </button>
+    const API_URL =
+      "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
 
-    <div id="sectionTitle" class="section-title"></div>
-
-    <div class="month">
-      Сентябрь 2026
-    </div>
-
-    <div class="calendar">
-
-      <div class="weekdays">
-        <div class="weekday">Пн</div>
-        <div class="weekday">Вт</div>
-        <div class="weekday">Ср</div>
-        <div class="weekday">Чт</div>
-        <div class="weekday">Пт</div>
-        <div class="weekday">Сб</div>
-        <div class="weekday">Вс</div>
-      </div>
-
-      <div id="days" class="days"></div>
-
-    </div>
-
-    <div class="hint">
-      Нажмите на дату и выберите один вариант:
-      <br>
-      🟢 Могу выступить
-      <br>
-      🟡 Пока не знаю
-      <br>
-      🔴 Не могу выступить
-    </div>
-
-    <button class="send" onclick="sendDates()">
-      📤 Отправить
-    </button>
-
-  </div>
+    let currentDepartment = null;
+    let events = [];
+    let selectedDates = {};
 
 
-  <div
-    id="overlay"
-    class="overlay"
-    onclick="closeSheet()"
-  ></div>
+    async function openDepartment(department) {
 
+      currentDepartment = department;
 
-  <div
-    id="bottomSheet"
-    class="bottom-sheet"
-  >
+      document
+        .getElementById("departmentScreen")
+        .classList.add("hidden");
 
-    <div
-      id="sheetTitle"
-      class="sheet-title"
-    ></div>
+      document
+        .getElementById("calendarScreen")
+        .classList.remove("hidden");
 
-    <button
-      class="status-button status-free"
-      onclick="chooseStatus('free')"
-    >
-      🟢 Могу выступить
-    </button>
+      document.getElementById("loading").classList.remove("hidden");
+      document.getElementById("calendarContent").classList.add("hidden");
+      document.getElementById("error").classList.add("hidden");
 
-    <button
-      class="status-button status-maybe"
-      onclick="chooseStatus('maybe')"
-    >
-      🟡 Пока не знаю
-    </button>
+      document.getElementById("departmentTitle").textContent =
+        department === "classic"
+          ? "🎼 Классика"
+          : "🎧 Эстрада / неоклассика";
 
-    <button
-      class="status-button status-busy"
-      onclick="chooseStatus('busy')"
-    >
-      🔴 Не могу выступить
-    </button>
+      selectedDates = {};
 
-    <button
-      class="cancel-button"
-      onclick="closeSheet()"
-    >
-      Отмена
-    </button>
+      try {
 
-  </div>
+        const response = await fetch(
+          API_URL + "?department=" + encodeURIComponent(department)
+        );
 
+        if (!response.ok) {
+          throw new Error("Ошибка загрузки");
+        }
 
-<script>
+        const data = await response.json();
 
-const SUPABASE_FUNCTION =
-  "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
+        events = data.events || [];
 
+        renderCalendar();
 
-let currentDepartment = null;
-let currentEvents = [];
-let currentSelectedDate = null;
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("calendarContent").classList.remove("hidden");
 
-const selected = {};
+      } catch (error) {
 
+        document.getElementById("loading").classList.add("hidden");
 
-function showDepartments() {
+        const errorBlock = document.getElementById("error");
 
-  document.getElementById("departmentScreen").style.display = "block";
+        errorBlock.textContent =
+          "Не удалось загрузить даты. Попробуйте ещё раз.";
 
-  document.getElementById("calendarScreen").style.display = "none";
-
-}
-
-
-async function openCalendar(department) {
-
-  currentDepartment = department;
-
-  document.getElementById("departmentScreen").style.display = "none";
-
-  document.getElementById("calendarScreen").style.display = "block";
-
-  const title =
-    department === "classic"
-      ? "🎼 Классика"
-      : "🎧 Эстрада / неоклассика";
-
-  document.getElementById("sectionTitle").textContent = title;
-
-  document.getElementById("days").innerHTML =
-    "<div style='grid-column:1/-1;text-align:center;padding:30px;opacity:.6'>Загрузка…</div>";
-
-
-  try {
-
-    const response = await fetch(
-      SUPABASE_FUNCTION +
-      "?department=" +
-      encodeURIComponent(department)
-    );
-
-
-    if (!response.ok) {
-      throw new Error("Ошибка загрузки");
+        errorBlock.classList.remove("hidden");
+      }
     }
 
 
-    const data = await response.json();
+    function backToDepartments() {
 
-    currentEvents = data.events || [];
+      document
+        .getElementById("calendarScreen")
+        .classList.add("hidden");
 
-    drawCalendar(currentEvents);
+      document
+        .getElementById("departmentScreen")
+        .classList.remove("hidden");
 
-  } catch (error) {
-
-    document.getElementById("days").innerHTML =
-      "<div style='grid-column:1/-1;text-align:center;padding:30px;color:#d33'>Не удалось загрузить даты.</div>";
-
-  }
-
-}
+      selectedDates = {};
+    }
 
 
-function drawCalendar(events) {
+    function renderCalendar() {
 
-  const daysContainer =
-    document.getElementById("days");
+      const daysContainer = document.getElementById("days");
 
-  daysContainer.innerHTML = "";
+      daysContainer.innerHTML = "";
 
+      /*
+        1 сентября 2026 года — вторник.
+        Поэтому перед единицей ставим один пустой день.
+      */
 
-  const year = 2026;
-  const month = 8;
-
-
-  const firstDay =
-    new Date(year, month, 1);
+      daysContainer.appendChild(createEmptyDay());
 
 
-  let startDay =
-    firstDay.getDay();
+      for (let day = 1; day <= 30; day++) {
+
+        const dateString =
+          "2026-09-" + String(day).padStart(2, "0");
+
+        const event = events.find(
+          item => item.date === dateString
+        );
+
+        const dayElement = document.createElement("div");
+
+        dayElement.className = "day";
+
+        const numberElement =
+          document.createElement("div");
+
+        numberElement.className = "day-number";
+
+        numberElement.textContent = day;
+
+        dayElement.appendChild(numberElement);
 
 
-  if (startDay === 0) {
-    startDay = 7;
-  }
+        if (event) {
 
+          dayElement.classList.add("available");
 
-  const daysInMonth =
-    new Date(year, month + 1, 0).getDate();
-
-
-  const eventMap = {};
-
-
-  events.forEach(event => {
-
-    eventMap[event.date] = event;
-
-  });
-
-
-  for (
-    let i = 1;
-    i < startDay;
-    i++
-  ) {
-
-    const emptyCell =
-      document.createElement("div");
-
-    emptyCell.className = "day-cell";
-
-    const empty =
-      document.createElement("div");
-
-    empty.className = "day empty";
-
-    emptyCell.appendChild(empty);
-
-    daysContainer.appendChild(emptyCell);
-
-  }
-
-
-  for (
-    let day = 1;
-    day <= daysInMonth;
-    day++
-  ) {
-
-    const cell =
-      document.createElement("div");
-
-    cell.className = "day-cell";
-
-
-    const element =
-      document.createElement("div");
-
-    element.className = "day";
-
-
-    const date =
-      year +
-      "-" +
-      String(month + 1).padStart(2, "0") +
-      "-" +
-      String(day).padStart(2, "0");
-
-
-    element.textContent = day;
-
-
-    const event =
-      eventMap[date];
-
-
-    if (event) {
-
-      element.classList.add("active");
-
-
-      if (selected[date]) {
-        element.classList.add(selected[date]);
-      }
-
-
-      element.onclick = () => {
-
-        currentSelectedDate = date;
-
-        const formattedDate =
-          new Date(
-            year,
-            month,
-            day
-          ).toLocaleDateString(
-            "ru-RU",
-            {
-              day: "numeric",
-              month: "long"
-            }
+          numberElement.addEventListener(
+            "click",
+            () => chooseDate(dateString)
           );
 
 
-        document.getElementById("sheetTitle").textContent =
-          formattedDate +
-          (event.time
-            ? " · " + event.time
-            : "");
+          const timeElement =
+            document.createElement("div");
+
+          timeElement.className = "day-time";
+
+          timeElement.textContent =
+            formatTime(event.time);
+
+          dayElement.appendChild(timeElement);
 
 
-        openSheet();
+          /*
+            Москва показывается только тогда,
+            когда city действительно указан в базе.
+          */
 
-      };
+          if (event.city) {
+
+            const cityElement =
+              document.createElement("div");
+
+            cityElement.className = "day-city";
+
+            cityElement.textContent =
+              event.city;
+
+            dayElement.appendChild(cityElement);
+          }
 
 
-      const time =
-        document.createElement("div");
+          applySelectedState(
+            dayElement,
+            dateString
+          );
+        }
 
-      time.className = "day-time";
-
-      time.textContent =
-        event.time || "";
-
-      cell.appendChild(element);
-
-      cell.appendChild(time);
-
-    } else {
-
-      cell.appendChild(element);
-
+        daysContainer.appendChild(dayElement);
+      }
     }
 
 
-    daysContainer.appendChild(cell);
+    function createEmptyDay() {
 
-  }
+      const empty = document.createElement("div");
 
-}
+      empty.className = "day";
 
-
-function openSheet() {
-
-  document.getElementById("overlay").style.display = "block";
-
-  document.getElementById("bottomSheet").classList.add("open");
-
-}
+      return empty;
+    }
 
 
-function closeSheet() {
+    function formatTime(time) {
 
-  document.getElementById("bottomSheet").classList.remove("open");
+      if (!time) return "";
 
-  setTimeout(() => {
-
-    document.getElementById("overlay").style.display = "none";
-
-  }, 200);
-
-}
+      return String(time).slice(0, 5);
+    }
 
 
-function chooseStatus(status) {
+    function chooseDate(date) {
 
-  if (!currentSelectedDate) {
-    return;
-  }
+      /*
+        Цикл:
+        первое нажатие → могу выступить
+        второе → пока не знаю
+        третье → не могу выступить
+        четвёртое → снова без отметки
+      */
 
+      const current =
+        selectedDates[date] || null;
 
-  selected[currentSelectedDate] = status;
+      if (!current) {
+        selectedDates[date] = "green";
+      } else if (current === "green") {
+        selectedDates[date] = "yellow";
+      } else if (current === "yellow") {
+        selectedDates[date] = "red";
+      } else {
+        delete selectedDates[date];
+      }
 
-  closeSheet();
-
-  drawCalendar(currentEvents);
-
-}
-
-
-function sendDates() {
-
-  const result =
-    Object.entries(selected);
-
-
-  if (result.length === 0) {
-
-    alert("Выберите хотя бы одну дату.");
-
-    return;
-
-  }
+      renderCalendar();
+    }
 
 
-  let text =
-    "Вы выбрали " +
-    result.length +
-    " дат.";
+    function applySelectedState(
+      element,
+      date
+    ) {
+
+      const state = selectedDates[date];
+
+      if (state === "green") {
+        element.classList.add("selected-green");
+      }
+
+      if (state === "yellow") {
+        element.classList.add("selected-yellow");
+      }
+
+      if (state === "red") {
+        element.classList.add("selected-red");
+      }
+    }
 
 
-  alert(text);
+    function sendAvailability() {
 
-}
+      const selected = Object.entries(selectedDates);
 
-</script>
+      if (selected.length === 0) {
+
+        alert(
+          "Выберите хотя бы одну дату."
+        );
+
+        return;
+      }
+
+
+      const result = selected.map(
+        ([date, status]) => {
+
+          let text = "";
+
+          if (status === "green") {
+            text = "Могу выступить";
+          }
+
+          if (status === "yellow") {
+            text = "Пока не знаю";
+          }
+
+          if (status === "red") {
+            text = "Не могу выступить";
+          }
+
+          return date + ": " + text;
+        }
+      );
+
+
+      /*
+        Пока только тестируем интерфейс.
+        На следующем этапе подключим отправку
+        непосредственно в таблицу availability.
+      */
+
+      alert(
+        "Готово!\n\n" +
+        result.join("\n")
+      );
+    }
+
+  </script>
 
 </body>
 </html>
