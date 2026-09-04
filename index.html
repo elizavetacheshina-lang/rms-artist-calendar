@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Возможные даты</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box} body{margin:0;padding:24px 16px 32px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--tg-theme-bg-color,#fff);color:var(--tg-theme-text-color,#222)}
+.title{font-size:27px;font-weight:700;margin-bottom:8px}.subtitle{font-size:15px;line-height:1.45;opacity:.65;margin-bottom:24px}
+.departments{display:flex;flex-direction:column;gap:12px}.department-button{width:100%;border:none;border-radius:16px;padding:18px;text-align:left;font-size:17px;font-weight:600;background:var(--tg-theme-secondary-bg-color,#f2f2f2);color:var(--tg-theme-text-color,#222)}
+.calendar-screen{display:none}.back-button{border:none;background:transparent;padding:0;margin-bottom:20px;font-size:15px;color:var(--tg-theme-link-color,#2481cc)}
+.section-title{font-size:23px;font-weight:700;margin-bottom:20px}.month{font-size:20px;font-weight:600;margin-bottom:14px}.calendar{background:var(--tg-theme-secondary-bg-color,#f4f4f5);border-radius:18px;padding:14px}
+.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekday{text-align:center;font-size:12px;opacity:.55;padding-bottom:6px}
+.day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:16px}.day.empty{visibility:hidden}.day.active{background:var(--tg-theme-bg-color,#fff);font-weight:700;box-shadow:0 1px 5px rgba(0,0,0,.1);cursor:pointer}.day.free{background:#35b85a;color:#fff}.day.busy{background:#e85d5d;color:#fff}
+.legend{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:13px;opacity:.75}.legend-item{display:flex;align-items:center;gap:6px}.circle{width:12px;height:12px;border-radius:50%}.circle.free{background:#35b85a}.circle.busy{background:#e85d5d}
+.hint{margin-top:20px;font-size:14px;line-height:1.45;opacity:.65}.send{width:100%;border:none;border-radius:14px;padding:15px;margin-top:24px;font-size:17px;font-weight:600;background:var(--tg-theme-button-color,#2481cc);color:var(--tg-theme-button-text-color,#fff)}
+</style>
+</head>
+<body>
+<div id="departmentScreen">
+<div class="title">📅 Возможные даты</div>
+<div class="subtitle">Выберите направление, для которого хотите указать свою доступность.</div>
+<div class="departments">
+<button class="department-button" onclick="openCalendar('classic')">🎼 Классика</button>
+<button class="department-button" onclick="openCalendar('pop')">🎧 Эстрада / неоклассика</button>
+</div></div>
+
+<div id="calendarScreen" class="calendar-screen">
+<button class="back-button" onclick="showDepartments()">◀️ Назад к отделам</button>
+<div id="sectionTitle" class="section-title"></div>
+<div class="month">Сентябрь 2026</div>
+<div class="calendar">
+<div class="weekdays"><div class="weekday">Пн</div><div class="weekday">Вт</div><div class="weekday">Ср</div><div class="weekday">Чт</div><div class="weekday">Пт</div><div class="weekday">Сб</div><div class="weekday">Вс</div></div>
+<div id="days" class="days"></div>
+</div>
+<div class="legend"><div class="legend-item"><span class="circle free"></span>Свободна</div><div class="legend-item"><span class="circle busy"></span>Занята</div></div>
+<div class="hint">Нажмите на выделенную дату, чтобы указать свою доступность. Первое нажатие — свободна, второе — занята.</div>
+<button class="send" onclick="sendDates()">📤 Отправить</button>
+</div>
+
+<script>
+const tg=window.Telegram.WebApp; tg.expand();
+const departments={
+classic:["2026-09-11","2026-09-13","2026-09-18","2026-09-20","2026-09-26","2026-09-27"],
+pop:["2026-09-10","2026-09-12","2026-09-19","2026-09-20","2026-09-25","2026-09-26"]
+};
+let currentDepartment=null; const selected={};
+function showDepartments(){document.getElementById("departmentScreen").style.display="block";document.getElementById("calendarScreen").style.display="none";}
+function openCalendar(department){currentDepartment=department;document.getElementById("departmentScreen").style.display="none";document.getElementById("calendarScreen").style.display="block";document.getElementById("sectionTitle").textContent=department==="classic"?"🎼 Классика":"🎧 Эстрада / неоклассика";drawCalendar(departments[department]);}
+function drawCalendar(activeDates){
+const c=document.getElementById("days"); c.innerHTML="";
+const year=2026,month=8,firstDay=new Date(year,month,1); let startDay=firstDay.getDay(); if(startDay===0)startDay=7;
+const daysInMonth=new Date(year,month+1,0).getDate();
+for(let i=1;i<startDay;i++){const e=document.createElement("div");e.className="day empty";c.appendChild(e);}
+for(let day=1;day<=daysInMonth;day++){
+const e=document.createElement("div");e.className="day";
+const date=year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"); e.textContent=day;
+if(activeDates.includes(date)){e.classList.add("active");if(selected[date])e.classList.add(selected[date]);e.onclick=()=>{
+if(!selected[date]){selected[date]="free";e.classList.add("free")}
+else if(selected[date]==="free"){selected[date]="busy";e.classList.remove("free");e.classList.add("busy")}
+else{delete selected[date];e.classList.remove("busy")}
+};}
+c.appendChild(e);
+}}
+function sendDates(){const result=Object.entries(selected);if(result.length===0){tg.showAlert("Выберите хотя бы одну дату.");return;}tg.showAlert("Вы выбрали "+result.length+" дат.");}
+</script>
+</body>
+</html>
