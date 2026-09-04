@@ -1,1257 +1,1638 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>RMS — Возможные даты</title>
+<meta charset="UTF-8">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f7f7f8;
-      color: #222;
-    }
+<title>RMS — Возможные даты</title>
 
-    .app {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 24px 16px 120px;
-    }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    h1 {
-      font-size: 24px;
-      margin: 0 0 8px;
-    }
+<style>
 
-    .subtitle {
-      color: #777;
-      font-size: 15px;
-      margin-bottom: 24px;
-      line-height: 1.4;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    button {
-      font-family: inherit;
-    }
+body {
+  margin: 0;
+  padding: 24px 16px 32px;
 
-    .hidden {
-      display: none !important;
-    }
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 
-    /* Направления */
+  background:
+    var(--tg-theme-bg-color, #ffffff);
 
-    .departments {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  color:
+    var(--tg-theme-text-color, #222222);
+}
 
-    .department-button {
-      width: 100%;
-      border: none;
-      border-radius: 18px;
-      padding: 18px;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      font-size: 17px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-    }
 
-    .department-button:active {
-      transform: scale(0.98);
-    }
+/* ---------- ГЛАВНЫЙ ЭКРАН ---------- */
 
-    /* Календарь */
+.title {
+  font-size: 27px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
 
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 18px;
-    }
+.subtitle {
+  font-size: 15px;
+  line-height: 1.45;
+  opacity: 0.65;
+  margin-bottom: 24px;
+}
 
-    .back-button {
-      border: none;
-      background: transparent;
-      color: #555;
-      font-size: 15px;
-      padding: 6px 0;
-      cursor: pointer;
-    }
+.departments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-    .month-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
+.department-button {
+  width: 100%;
 
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 7px;
-    }
+  border: none;
+  border-radius: 16px;
 
-    .weekday {
-      text-align: center;
-      font-size: 11px;
-      color: #999;
-      padding-bottom: 5px;
-    }
+  padding: 18px;
 
-    .day {
-      min-height: 64px;
-      border: none;
-      border-radius: 13px;
-      background: #e9e9eb;
-      padding: 7px 3px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: default;
-      transition: transform 0.15s, background 0.15s;
-    }
+  text-align: left;
 
-    .day.empty {
-      background: transparent;
-    }
+  font-size: 17px;
+  font-weight: 600;
 
-    .day.active {
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      cursor: pointer;
-    }
+  background:
+    var(--tg-theme-secondary-bg-color, #f2f2f2);
 
-    .day.active:active {
-      transform: scale(0.95);
-    }
+  color:
+    var(--tg-theme-text-color, #222222);
+}
 
-    .day.green {
-      background: #dff3e4;
-    }
+.department-button:active {
+  opacity: 0.7;
+}
 
-    .day.yellow {
-      background: #fff1bf;
-    }
 
-    .day.red {
-      background: #f7dada;
-    }
+/* ---------- КАЛЕНДАРЬ ---------- */
 
-    .day-number {
-      font-size: 16px;
-      font-weight: 600;
-    }
+.calendar-screen {
+  display: none;
+}
 
-    .day-time {
-      margin-top: 4px;
-      font-size: 10px;
-      color: #777;
-    }
+.back-button {
+  border: none;
+  background: transparent;
 
-    .day-city {
-      margin-top: 2px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #555;
-    }
+  padding: 0;
+  margin-bottom: 20px;
 
-    .multiple-events {
-      margin-top: 4px;
-      font-size: 10px;
-      color: #777;
-      font-weight: 600;
-    }
+  font-size: 15px;
 
-    /* Легенда */
+  color:
+    var(--tg-theme-link-color, #2481cc);
+}
 
-    .legend {
-      margin-top: 22px;
-      background: white;
-      border-radius: 16px;
-      padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
+.section-title {
+  font-size: 23px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 14px;
-      margin: 7px 0;
-    }
+.month {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
 
-    .legend-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+.calendar {
+  background:
+    var(--tg-theme-secondary-bg-color, #f4f4f5);
 
-    .dot-green {
-      background: #6fc586;
-    }
+  border-radius: 18px;
 
-    .dot-yellow {
-      background: #e7bd38;
-    }
+  padding: 14px;
+}
 
-    .dot-red {
-      background: #df7777;
-    }
+.weekdays,
+.days {
+  display: grid;
 
-    /* Кнопка отправки */
+  grid-template-columns:
+    repeat(7, 1fr);
 
-    .send-button {
-      position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      max-width: 488px;
-      margin: auto;
-      border: none;
-      border-radius: 16px;
-      padding: 16px;
-      background: #222;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.18);
-    }
+  gap: 6px;
+}
 
-    .send-button:active {
-      transform: scale(0.98);
-    }
+.weekday {
+  text-align: center;
 
-    /* Нижнее меню */
+  font-size: 12px;
 
-    .sheet-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 1000;
-    }
+  opacity: 0.55;
 
-    .sheet {
-      width: 100%;
-      max-width: 520px;
-      background: white;
-      border-radius: 22px 22px 0 0;
-      padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
-      box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
-      animation: slideUp 0.18s ease-out;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
+  padding-bottom: 6px;
+}
 
-    @keyframes slideUp {
-      from {
-        transform: translateY(100%);
-      }
+.day {
+  aspect-ratio: 1;
 
-      to {
-        transform: translateY(0);
-      }
-    }
+  display: flex;
 
-    .sheet-handle {
-      width: 42px;
-      height: 5px;
-      border-radius: 10px;
-      background: #ddd;
-      margin: 0 auto 16px;
-    }
+  align-items: center;
+  justify-content: center;
 
-    .sheet-title {
-      text-align: center;
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
+  border-radius: 50%;
 
-    /* Концерты внутри меню */
+  font-size: 16px;
+}
 
-    .concert-button {
-      width: 100%;
-      border: none;
-      border-radius: 15px;
-      padding: 15px;
-      margin-top: 8px;
-      background: #f3f3f4;
-      font-size: 16px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
+.day.empty {
+  visibility: hidden;
+}
 
-    .concert-button:active {
-      transform: scale(0.98);
-    }
+.day.active {
+  background:
+    var(--tg-theme-bg-color, #ffffff);
 
-    .concert-button.green {
-      background: #dff3e4;
-    }
+  font-weight: 700;
 
-    .concert-button.yellow {
-      background: #fff1bf;
-    }
+  box-shadow:
+    0 1px 5px rgba(0,0,0,0.1);
 
-    .concert-button.red {
-      background: #f7dada;
-    }
+  cursor: pointer;
+}
 
-    .concert-city {
-      display: block;
-      margin-bottom: 4px;
-    }
+.day.free {
+  background: #35b85a;
+  color: #ffffff;
+}
 
-    .concert-time {
-      display: block;
-      font-size: 14px;
-      font-weight: 400;
-      color: #777;
-    }
+.day.busy {
+  background: #e85d5d;
+  color: #ffffff;
+}
 
-    .concert-status {
-      display: block;
-      margin-top: 8px;
-      font-size: 13px;
-      font-weight: 600;
-    }
+.day.maybe {
+  background: #f2c94c;
+  color: #222222;
+}
 
-    /* Статусы */
 
-    .status-button {
-      width: 100%;
-      border: none;
-      border-radius: 15px;
-      padding: 15px;
-      margin-top: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-    }
+/* ---------- ЛЕГЕНДА ---------- */
 
-    .status-green {
-      background: #dff3e4;
-    }
+.legend {
+  margin-top: 18px;
 
-    .status-yellow {
-      background: #fff1bf;
-    }
+  display: flex;
 
-    .status-red {
-      background: #f7dada;
-    }
+  gap: 14px;
 
-    .cancel-button {
-      width: 100%;
-      border: none;
-      background: #f2f2f3;
-      border-radius: 15px;
-      padding: 14px;
-      margin-top: 14px;
-      font-size: 15px;
-      cursor: pointer;
-    }
+  flex-wrap: wrap;
 
-    .loading {
-      text-align: center;
-      color: #888;
-      padding: 30px 0;
-    }
-  </style>
+  font-size: 13px;
+
+  opacity: 0.75;
+}
+
+.legend-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+}
+
+.circle.free {
+  background: #35b85a;
+}
+
+.circle.maybe {
+  background: #f2c94c;
+}
+
+.circle.busy {
+  background: #e85d5d;
+}
+
+
+/* ---------- ПОДСКАЗКА ---------- */
+
+.hint {
+  margin-top: 20px;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+
+  opacity: 0.65;
+}
+
+
+/* ---------- КНОПКА ОТПРАВИТЬ ---------- */
+
+.send {
+  width: 100%;
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 15px;
+
+  margin-top: 24px;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  background:
+    var(--tg-theme-button-color, #2481cc);
+
+  color:
+    var(--tg-theme-button-text-color, #ffffff);
+}
+
+.send:disabled {
+  opacity: 0.6;
+}
+
+
+/* ---------- НИЖНЕЕ ОКНО ---------- */
+
+.sheet-backdrop {
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,0.28);
+
+  z-index: 10;
+}
+
+.sheet {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background:
+    var(--tg-theme-bg-color, #ffffff);
+
+  border-radius:
+    22px 22px 0 0;
+
+  padding:
+    10px 16px 28px;
+
+  z-index: 11;
+
+  box-shadow:
+    0 -4px 20px rgba(0,0,0,0.12);
+
+  max-height: 80vh;
+
+  overflow-y: auto;
+}
+
+.sheet-handle {
+  width: 42px;
+  height: 5px;
+
+  border-radius: 5px;
+
+  background:
+    var(--tg-theme-hint-color, #aaaaaa);
+
+  opacity: 0.45;
+
+  margin:
+    2px auto 18px;
+}
+
+.sheet-title {
+  font-size: 20px;
+
+  font-weight: 700;
+
+  margin-bottom: 8px;
+}
+
+.sheet-subtitle {
+  font-size: 14px;
+
+  opacity: 0.6;
+
+  margin-bottom: 14px;
+}
+
+
+/* ---------- КНОПКИ СТАТУСОВ ---------- */
+
+.sheet-option {
+  width: 100%;
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 15px;
+
+  margin-top: 8px;
+
+  text-align: left;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  background:
+    var(--tg-theme-secondary-bg-color, #f2f2f5);
+
+  color:
+    var(--tg-theme-text-color, #222222);
+}
+
+.sheet-option:active {
+  opacity: 0.7;
+}
+
+.sheet-option.free {
+  border-left:
+    5px solid #35b85a;
+}
+
+.sheet-option.maybe {
+  border-left:
+    5px solid #f2c94c;
+}
+
+.sheet-option.busy {
+  border-left:
+    5px solid #e85d5d;
+}
+
+
+/* ---------- КОНЦЕРТЫ ПРИ НЕСКОЛЬКИХ СОБЫТИЯХ ---------- */
+
+.concert-card {
+  width: 100%;
+
+  border: none;
+
+  border-radius: 15px;
+
+  padding: 15px;
+
+  margin-top: 9px;
+
+  text-align: left;
+
+  background:
+    var(--tg-theme-secondary-bg-color, #f2f2f5);
+
+  color:
+    var(--tg-theme-text-color, #222222);
+}
+
+.concert-card:active {
+  opacity: 0.7;
+}
+
+.concert-card.free {
+  background:
+    rgba(53,184,90,0.18);
+}
+
+.concert-card.maybe {
+  background:
+    rgba(242,201,76,0.25);
+}
+
+.concert-card.busy {
+  background:
+    rgba(232,93,93,0.18);
+}
+
+.concert-main {
+  font-size: 16px;
+
+  font-weight: 700;
+}
+
+.concert-meta {
+  font-size: 14px;
+
+  opacity: 0.7;
+
+  margin-top: 5px;
+}
+
+.concert-status {
+  font-size: 14px;
+
+  margin-top: 8px;
+
+  font-weight: 600;
+}
+
+
+/* ---------- ОТМЕНА ---------- */
+
+.sheet-cancel {
+  width: 100%;
+
+  border: none;
+
+  background: transparent;
+
+  padding:
+    14px 0 0;
+
+  font-size: 15px;
+
+  color:
+    var(--tg-theme-link-color, #2481cc);
+}
+
+
+/* ---------- СЛУЖЕБНЫЕ СООБЩЕНИЯ ---------- */
+
+.loading {
+  text-align: center;
+
+  padding: 30px 10px;
+
+  opacity: 0.65;
+}
+
+.error {
+  text-align: center;
+
+  padding: 20px 10px;
+
+  color: #d33;
+}
+
+</style>
 </head>
+
 
 <body>
 
-  <div class="app">
 
-    <!-- Экран направлений -->
+<!-- ========================================================= -->
+<!-- ЭКРАН ВЫБОРА НАПРАВЛЕНИЯ -->
+<!-- ========================================================= -->
 
-    <div id="departmentScreen">
+<div id="departmentScreen">
 
-      <h1>Возможные даты</h1>
+  <div class="title">
+    📅 Возможные даты
+  </div>
 
-      <div class="subtitle">
-        Выберите направление.
-      </div>
+  <div class="subtitle">
+    Выберите направление.
+  </div>
 
-      <div class="departments">
+  <div class="departments">
 
-        <button
-          class="department-button"
-          onclick="openDepartment('classic')"
-        >
-          🎼 Классика
-        </button>
+    <button
+      class="department-button"
+      onclick="openCalendar('classic')"
+    >
+      🎼 Классика
+    </button>
 
-        <button
-          class="department-button"
-          onclick="openDepartment('pop')"
-        >
-          🎧 Эстрада / неоклассика
-        </button>
 
-      </div>
+    <button
+      class="department-button"
+      onclick="openCalendar('pop')"
+    >
+      🎧 Эстрада / неоклассика
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- ЭКРАН КАЛЕНДАРЯ -->
+<!-- ========================================================= -->
+
+<div
+  id="calendarScreen"
+  class="calendar-screen"
+>
+
+  <button
+    class="back-button"
+    onclick="showDepartments()"
+  >
+    ◀️ Назад к отделам
+  </button>
+
+
+  <div
+    id="sectionTitle"
+    class="section-title"
+  ></div>
+
+
+  <div class="month">
+    Сентябрь 2026
+  </div>
+
+
+  <div class="calendar">
+
+    <div class="weekdays">
+
+      <div class="weekday">Пн</div>
+      <div class="weekday">Вт</div>
+      <div class="weekday">Ср</div>
+      <div class="weekday">Чт</div>
+      <div class="weekday">Пт</div>
+      <div class="weekday">Сб</div>
+      <div class="weekday">Вс</div>
 
     </div>
 
 
-    <!-- Экран календаря -->
+    <div
+      id="days"
+      class="days"
+    ></div>
 
-    <div id="calendarScreen" class="hidden">
-
-      <div class="calendar-header">
-
-        <button
-          class="back-button"
-          onclick="backToDepartments()"
-        >
-          ← Назад
-        </button>
-
-      </div>
-
-      <div
-        id="departmentTitle"
-        class="month-title"
-      ></div>
-
-      <div class="month-title">
-        Сентябрь 2026
-      </div>
-
-      <div
-        id="calendar"
-        class="calendar"
-      ></div>
+  </div>
 
 
-      <div class="legend">
+  <div class="legend">
 
-        <div class="legend-item">
-          <span class="legend-dot dot-green"></span>
-          Могу выступить
-        </div>
+    <div class="legend-item">
+      <span class="circle free"></span>
+      Могу выступить
+    </div>
 
-        <div class="legend-item">
-          <span class="legend-dot dot-yellow"></span>
-          Пока не знаю
-        </div>
+    <div class="legend-item">
+      <span class="circle maybe"></span>
+      Пока не знаю
+    </div>
 
-        <div class="legend-item">
-          <span class="legend-dot dot-red"></span>
-          Не могу выступить
-        </div>
-
-      </div>
-
+    <div class="legend-item">
+      <span class="circle busy"></span>
+      Не могу выступить
     </div>
 
   </div>
 
 
-  <!-- Кнопка отправки -->
+  <div class="hint">
+    Нажмите на выделенную дату, чтобы указать свою доступность.
+  </div>
+
 
   <button
     id="sendButton"
-    class="send-button hidden"
+    class="send"
     onclick="sendAvailability()"
   >
     📤 Отправить
   </button>
 
+</div>
 
-  <!-- Нижнее меню -->
+
+
+<!-- ========================================================= -->
+<!-- НИЖНЕЕ ОКНО -->
+<!-- ========================================================= -->
+
+<div
+  id="sheetBackdrop"
+  class="sheet-backdrop"
+  onclick="closeSheet()"
+></div>
+
+
+<div
+  id="sheet"
+  class="sheet"
+>
+
+  <div class="sheet-handle"></div>
+
 
   <div
-    id="sheetOverlay"
-    class="sheet-overlay hidden"
-    onclick="closeSheet(event)"
+    id="sheetTitle"
+    class="sheet-title"
+  ></div>
+
+
+  <div
+    id="sheetSubtitle"
+    class="sheet-subtitle"
+  ></div>
+
+
+  <div
+    id="sheetContent"
+  ></div>
+
+
+  <button
+    class="sheet-cancel"
+    onclick="closeSheet()"
   >
+    Отмена
+  </button>
 
-    <div
-      class="sheet"
-      onclick="event.stopPropagation()"
-    >
-
-      <div class="sheet-handle"></div>
-
-      <div
-        id="sheetTitle"
-        class="sheet-title"
-      >
-        Выберите статус
-      </div>
+</div>
 
 
-      <!-- Выбор концерта -->
 
-      <div id="concertSelection"></div>
-
-
-      <!-- Выбор статуса -->
-
-      <div
-        id="statusSelection"
-        class="hidden"
-      >
-
-        <button
-          class="status-button status-green"
-          onclick="selectStatus('green')"
-        >
-          🟢 Могу выступить
-        </button>
-
-        <button
-          class="status-button status-yellow"
-          onclick="selectStatus('yellow')"
-        >
-          🟡 Пока не знаю
-        </button>
-
-        <button
-          class="status-button status-red"
-          onclick="selectStatus('red')"
-        >
-          🔴 Не могу выступить
-        </button>
-
-        <button
-          class="cancel-button"
-          onclick="closeSheet()"
-        >
-          Отмена
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
+<script>
 
 
-  <script>
+/* ========================================================= */
+/* TELEGRAM */
+/* ========================================================= */
 
-    const SUPABASE_FUNCTION =
-      "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
+const tg =
+  window.Telegram &&
+  window.Telegram.WebApp;
 
 
-    let currentDepartment = null;
-    let events = [];
-    let selectedDate = null;
-    let selectedEventId = null;
+if (tg) {
+
+  tg.ready();
+
+  tg.expand();
+
+}
+
+
+/* ========================================================= */
+/* SUPABASE */
+/* ========================================================= */
+
+const SUPABASE_FUNCTION =
+  "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
+
+
+/* ========================================================= */
+/* НАЗВАНИЯ ОТДЕЛОВ */
+/* ========================================================= */
+
+const departmentLabels = {
+
+  classic:
+    "🎼 Классика",
+
+  pop:
+    "🎧 Эстрада / неоклассика"
+
+};
+
+
+/* ========================================================= */
+/* ТЕКУЩЕЕ СОСТОЯНИЕ */
+/* ========================================================= */
+
+let currentDepartment = null;
+
+let events = [];
+
+let activeDate = null;
+
+let activeEventId = null;
+
+
+/*
+  Здесь будут храниться ответы артиста.
+
+  Например:
+
+  {
+    13: "green",
+    14: "red"
+  }
+
+  где 13 и 14 — event_id.
+*/
+
+const availability = {};
+
+
+/* ========================================================= */
+/* ПОКАЗАТЬ ОТДЕЛЫ */
+/* ========================================================= */
+
+function showDepartments() {
+
+  document
+    .getElementById("departmentScreen")
+    .style.display = "block";
+
+
+  document
+    .getElementById("calendarScreen")
+    .style.display = "none";
+
+
+  currentDepartment = null;
+
+}
+
+
+/* ========================================================= */
+/* ОТКРЫТЬ КАЛЕНДАРЬ */
+/* ========================================================= */
+
+async function openCalendar(department) {
+
+  currentDepartment =
+    department;
+
+
+  document
+    .getElementById("departmentScreen")
+    .style.display = "none";
+
+
+  document
+    .getElementById("calendarScreen")
+    .style.display = "block";
+
+
+  document
+    .getElementById("sectionTitle")
+    .textContent =
+      departmentLabels[department];
+
+
+  document
+    .getElementById("days")
+    .innerHTML =
+      '<div class="loading" style="grid-column:1/-1">' +
+      'Загружаем даты…' +
+      '</div>';
+
+
+  try {
+
+    const response =
+      await fetch(
+        SUPABASE_FUNCTION +
+        "?department=" +
+        encodeURIComponent(department)
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Не удалось загрузить даты."
+      );
+
+    }
+
+
+    events =
+      Array.isArray(data.events)
+        ? data.events
+        : [];
+
+
+    drawCalendar();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    document
+      .getElementById("days")
+      .innerHTML =
+        '<div class="error" style="grid-column:1/-1">' +
+        'Не удалось загрузить даты.' +
+        '</div>';
+
+  }
+
+}
+
+
+/* ========================================================= */
+/* НАРИСОВАТЬ КАЛЕНДАРЬ */
+/* ========================================================= */
+
+function drawCalendar() {
+
+  const container =
+    document.getElementById("days");
+
+
+  container.innerHTML = "";
+
+
+  const year = 2026;
+
+  const month = 8;
+  /*
+    В JavaScript:
+    январь = 0
+    сентябрь = 8
+  */
+
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    );
+
+
+  let startDay =
+    firstDay.getDay();
+
+
+  if (startDay === 0) {
+
+    startDay = 7;
+
+  }
+
+
+  const daysInMonth =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+
+  /* Пустые клетки перед 1 сентября */
+
+  for (
+    let i = 1;
+    i < startDay;
+    i++
+  ) {
+
+    const empty =
+      document.createElement("div");
+
+
+    empty.className =
+      "day empty";
+
+
+    container.appendChild(
+      empty
+    );
+
+  }
+
+
+  /* Дни месяца */
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const date =
+      year +
+      "-" +
+      String(month + 1).padStart(2, "0") +
+      "-" +
+      String(day).padStart(2, "0");
+
+
+    const dayEvents =
+      events.filter(
+        event =>
+          event.date === date
+      );
+
+
+    const element =
+      document.createElement("div");
+
+
+    element.className =
+      "day";
+
+
+    element.textContent =
+      day;
 
 
     /*
-      Статусы хранятся по ID конкретного концерта.
-
-      Например:
-
-      {
-        13: "red",
-        14: "green"
-      }
-
-      Поэтому Москва и Санкт-Петербург
-      могут иметь разные ответы.
+      Если в этот день есть концерт,
+      делаем дату активной.
     */
 
-    const availability = {};
-
-
-    async function openDepartment(department) {
-
-      currentDepartment = department;
-
-      document
-        .getElementById("departmentScreen")
-        .classList.add("hidden");
-
-      document
-        .getElementById("calendarScreen")
-        .classList.remove("hidden");
-
-      document
-        .getElementById("sendButton")
-        .classList.remove("hidden");
-
-
-      document
-        .getElementById("departmentTitle")
-        .textContent =
-          department === "classic"
-            ? "🎼 Классика"
-            : "🎧 Эстрада / неоклассика";
-
-
-      document
-        .getElementById("calendar")
-        .innerHTML =
-          '<div class="loading">Загружаем даты…</div>';
-
-
-      try {
-
-        const response =
-          await fetch(
-            SUPABASE_FUNCTION +
-            "?department=" +
-            encodeURIComponent(department)
-          );
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || "Ошибка загрузки"
-          );
-        }
-
-
-        events =
-          data.events || [];
-
-
-        renderCalendar();
-
-      } catch (error) {
-
-        console.error(error);
-
-
-        document
-          .getElementById("calendar")
-          .innerHTML =
-            '<div class="loading">Не удалось загрузить даты.</div>';
-      }
-    }
-
-
-    function renderCalendar() {
-
-      const calendar =
-        document.getElementById("calendar");
-
-
-      calendar.innerHTML = "";
-
-
-      const weekdays = [
-        "Пн",
-        "Вт",
-        "Ср",
-        "Чт",
-        "Пт",
-        "Сб",
-        "Вс"
-      ];
-
-
-      weekdays.forEach(day => {
-
-        const el =
-          document.createElement("div");
-
-        el.className =
-          "weekday";
-
-        el.textContent =
-          day;
-
-        calendar.appendChild(el);
-
-      });
-
-
-      const year = 2026;
-      const month = 8;
-
-
-      const firstDay =
-        new Date(
-          year,
-          month,
-          1
-        ).getDay();
-
-
-      const mondayBasedFirstDay =
-        firstDay === 0
-          ? 6
-          : firstDay - 1;
-
-
-      for (
-        let i = 0;
-        i < mondayBasedFirstDay;
-        i++
-      ) {
-
-        const empty =
-          document.createElement("div");
-
-        empty.className =
-          "day empty";
-
-        calendar.appendChild(empty);
-
-      }
-
-
-      const daysInMonth =
-        new Date(
-          year,
-          month + 1,
-          0
-        ).getDate();
-
-
-      for (
-        let dayNumber = 1;
-        dayNumber <= daysInMonth;
-        dayNumber++
-      ) {
-
-        const date =
-          `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
-
-
-        const dayEvents =
-          events.filter(
-            event =>
-              event.date === date
-          );
-
-
-        const day =
-          document.createElement("button");
-
-
-        day.className =
-          "day";
-
-
-        if (dayEvents.length > 0) {
-
-          day.classList.add("active");
-
-
-          /*
-            Если концерт один —
-            дата получает его цвет.
-          */
-
-          if (dayEvents.length === 1) {
-
-            const status =
-              availability[
-                dayEvents[0].id
-              ];
-
-
-            if (status) {
-              day.classList.add(status);
-            }
-
-          }
-
-
-          day.onclick = () =>
-            openDateSheet(
-              date,
-              dayEvents
-            );
-        }
-
-
-        const number =
-          document.createElement("div");
-
-        number.className =
-          "day-number";
-
-        number.textContent =
-          dayNumber;
-
-        day.appendChild(number);
-
-
-        /*
-          Один концерт
-        */
-
-        if (dayEvents.length === 1) {
-
-          const event =
-            dayEvents[0];
-
-
-          if (event.time) {
-
-            const time =
-              document.createElement("div");
-
-            time.className =
-              "day-time";
-
-            time.textContent =
-              event.time;
-
-            day.appendChild(time);
-          }
-
-
-          const city =
-            getCityName(event);
-
-
-          if (city) {
-
-            const cityElement =
-              document.createElement("div");
-
-            cityElement.className =
-              "day-city";
-
-            cityElement.textContent =
-              city;
-
-            day.appendChild(cityElement);
-          }
-
-        }
-
-
-        /*
-          Несколько концертов
-        */
-
-        if (dayEvents.length > 1) {
-
-          const multiple =
-            document.createElement("div");
-
-          multiple.className =
-            "multiple-events";
-
-          multiple.textContent =
-            `${dayEvents.length} концерта`;
-
-          day.appendChild(multiple);
-        }
-
-
-        calendar.appendChild(day);
-
-      }
-
-    }
-
-
-    function openDateSheet(
-      date,
-      dayEvents
-    ) {
-
-      selectedDate = date;
-      selectedEventId = null;
+    if (dayEvents.length > 0) {
+
+      element.classList.add(
+        "active"
+      );
 
 
       /*
-        Если концерт один —
-        сразу выбор статуса.
+        Если концерт только один,
+        цвет показываем прямо
+        на календаре.
       */
 
       if (dayEvents.length === 1) {
 
-        selectedEventId =
-          dayEvents[0].id;
-
-
-        showStatusSelection(
-          dayEvents[0]
-        );
-
-        return;
-      }
-
-
-      /*
-        Если концертов несколько —
-        сначала выбираем концерт.
-      */
-
-      showConcertSelection(
-        date,
-        dayEvents
-      );
-
-    }
-
-
-    function showConcertSelection(
-      date,
-      dayEvents
-    ) {
-
-      const overlay =
-        document.getElementById(
-          "sheetOverlay"
-        );
-
-
-      const title =
-        document.getElementById(
-          "sheetTitle"
-        );
-
-
-      const concertSelection =
-        document.getElementById(
-          "concertSelection"
-        );
-
-
-      const statusSelection =
-        document.getElementById(
-          "statusSelection"
-        );
-
-
-      title.textContent =
-        formatDate(date);
-
-
-      concertSelection.innerHTML =
-        "";
-
-
-      concertSelection
-        .classList
-        .remove("hidden");
-
-
-      statusSelection
-        .classList
-        .add("hidden");
-
-
-      dayEvents.forEach(event => {
-
-        const button =
-          document.createElement("button");
-
-
         const status =
-          availability[event.id];
-
-
-        button.className =
-          "concert-button";
-
-
-        /*
-          ВАЖНО:
-          теперь выбранный статус
-          отображается прямо на концерте.
-        */
-
-        if (status) {
-          button.classList.add(status);
-        }
-
-
-        const city =
-          getCityName(event);
-
-
-        let statusText = "";
+          availability[
+            dayEvents[0].id
+          ];
 
 
         if (status === "green") {
-          statusText =
-            "🟢 Могу выступить";
+
+          element.classList.add(
+            "free"
+          );
+
         }
+
 
         if (status === "yellow") {
-          statusText =
-            "🟡 Пока не знаю";
+
+          element.classList.add(
+            "maybe"
+          );
+
         }
+
 
         if (status === "red") {
-          statusText =
-            "🔴 Не могу выступить";
+
+          element.classList.add(
+            "busy"
+          );
+
         }
 
-
-        button.innerHTML = `
-          <span class="concert-city">
-            📍 ${city}
-          </span>
-
-          <span class="concert-time">
-            ${event.time || ""}
-          </span>
-
-          ${
-            statusText
-              ? `<span class="concert-status">${statusText}</span>`
-              : ""
-          }
-        `;
-
-
-        button.onclick = () =>
-          chooseConcert(event);
-
-
-        concertSelection
-          .appendChild(button);
-
-      });
-
-
-      overlay
-        .classList
-        .remove("hidden");
-
-    }
-
-
-    function chooseConcert(event) {
-
-      selectedEventId =
-        event.id;
-
-
-      showStatusSelection(event);
-
-    }
-
-
-    function showStatusSelection(event) {
-
-      const overlay =
-        document.getElementById(
-          "sheetOverlay"
-        );
-
-
-      const title =
-        document.getElementById(
-          "sheetTitle"
-        );
-
-
-      const concertSelection =
-        document.getElementById(
-          "concertSelection"
-        );
-
-
-      const statusSelection =
-        document.getElementById(
-          "statusSelection"
-        );
-
-
-      title.textContent =
-        `${formatDate(event.date)} · ${getCityName(event)} · ${event.time || ""}`;
-
-
-      concertSelection.innerHTML =
-        "";
-
-
-      concertSelection
-        .classList
-        .add("hidden");
-
-
-      statusSelection
-        .classList
-        .remove("hidden");
-
-
-      overlay
-        .classList
-        .remove("hidden");
-
-    }
-
-
-    function selectStatus(status) {
-
-      if (!selectedEventId) {
-        return;
       }
 
 
       /*
-        Записываем статус
-        конкретного event_id.
+        Если концертов несколько,
+        дату оставляем нейтральной.
+
+        При нажатии откроется
+        список концертов.
       */
 
-      availability[
-        selectedEventId
-      ] = status;
-
-
-      closeSheet();
-
-
-      renderCalendar();
+      element.onclick =
+        () => openSheet(date);
 
     }
 
 
-    function closeSheet(event) {
+    container.appendChild(
+      element
+    );
 
-      if (
-        event &&
-        event.target !==
-          document.getElementById(
-            "sheetOverlay"
-          )
-      ) {
-        return;
-      }
+  }
+
+}
 
 
-      document
-        .getElementById(
-          "sheetOverlay"
-        )
-        .classList
-        .add("hidden");
+/* ========================================================= */
+/* ОТКРЫТЬ НИЖНЕЕ ОКНО */
+/* ========================================================= */
+
+function openSheet(date) {
+
+  activeDate =
+    date;
 
 
-      document
-        .getElementById(
-          "concertSelection"
-        )
-        .classList
-        .remove("hidden");
+  const dayEvents =
+    events.filter(
+      event =>
+        event.date === date
+    );
 
 
-      document
-        .getElementById(
-          "statusSelection"
-        )
-        .classList
-        .add("hidden");
+  document
+    .getElementById("sheetTitle")
+    .textContent =
+      formatDate(date);
 
 
-      selectedDate = null;
-      selectedEventId = null;
-
-    }
-
-
-    function getCityName(event) {
-
-      if (event.city) {
-        return event.city;
-      }
-
-      return "Санкт-Петербург";
-
-    }
+  document
+    .getElementById("sheetBackdrop")
+    .style.display =
+      "block";
 
 
-    function backToDepartments() {
-
-      document
-        .getElementById(
-          "calendarScreen"
-        )
-        .classList
-        .add("hidden");
+  document
+    .getElementById("sheet")
+    .style.display =
+      "block";
 
 
-      document
-        .getElementById(
-          "sendButton"
-        )
-        .classList
-        .add("hidden");
+  /*
+    Один концерт.
+    Сразу показываем статусы.
+  */
+
+  if (dayEvents.length === 1) {
+
+    activeEventId =
+      dayEvents[0].id;
 
 
-      document
-        .getElementById(
-          "departmentScreen"
-        )
-        .classList
-        .remove("hidden");
+    const event =
+      dayEvents[0];
 
 
-      events = [];
-      currentDepartment = null;
-
-    }
-
-
-    function formatDate(date) {
-
-      const [
-        year,
-        month,
-        day
-      ] =
-        date.split("-");
+    document
+      .getElementById("sheetSubtitle")
+      .textContent =
+        formatEventInfo(event);
 
 
-      return `${day}.${month}.${year}`;
+    showStatusButtons();
 
-    }
+    return;
+
+  }
 
 
-    function sendAvailability() {
+  /*
+    Несколько концертов.
+    Сначала показываем выбор концерта.
+  */
 
-      if (
-        Object.keys(availability)
-          .length === 0
-      ) {
+  activeEventId =
+    null;
 
-        alert(
-          "Сначала укажите доступность хотя бы для одной даты."
+
+  document
+    .getElementById("sheetSubtitle")
+    .textContent =
+      "В этот день несколько концертов. Выберите нужный:";
+
+
+  const content =
+    document.getElementById(
+      "sheetContent"
+    );
+
+
+  content.innerHTML = "";
+
+
+  dayEvents.forEach(
+    event => {
+
+      const button =
+        document.createElement("button");
+
+
+      button.className =
+        "concert-card";
+
+
+      const status =
+        availability[event.id];
+
+
+      if (status === "green") {
+
+        button.classList.add(
+          "free"
         );
 
-        return;
       }
 
 
-      console.log(
-        "Готовим отправку:",
-        availability
+      if (status === "yellow") {
+
+        button.classList.add(
+          "maybe"
+        );
+
+      }
+
+
+      if (status === "red") {
+
+        button.classList.add(
+          "busy"
+        );
+
+      }
+
+
+      let statusText =
+        "";
+
+
+      if (status === "green") {
+
+        statusText =
+          "🟢 Могу выступить";
+
+      }
+
+
+      if (status === "yellow") {
+
+        statusText =
+          "🟡 Пока не знаю";
+
+      }
+
+
+      if (status === "red") {
+
+        statusText =
+          "🔴 Не могу выступить";
+
+      }
+
+
+      button.innerHTML =
+
+        '<div class="concert-main">' +
+
+        (
+          event.city ||
+          "Санкт-Петербург"
+        ) +
+
+        '</div>' +
+
+        '<div class="concert-meta">' +
+
+        (
+          event.time ||
+          "Время не указано"
+        ) +
+
+        '</div>' +
+
+        (
+          statusText
+            ? '<div class="concert-status">' +
+              statusText +
+              '</div>'
+            : ''
+        );
+
+
+      button.onclick =
+        () => {
+
+          activeEventId =
+            event.id;
+
+
+          document
+            .getElementById("sheetSubtitle")
+            .textContent =
+              formatEventInfo(event);
+
+
+          showStatusButtons();
+
+        };
+
+
+      content.appendChild(
+        button
       );
 
+    }
+  );
+
+}
+
+
+/* ========================================================= */
+/* ИНФОРМАЦИЯ О КОНЦЕРТЕ */
+/* ========================================================= */
+
+function formatEventInfo(event) {
+
+  const city =
+    event.city ||
+    "Санкт-Петербург";
+
+
+  const time =
+    event.time ||
+    "Время не указано";
+
+
+  return (
+    city +
+    " · " +
+    time
+  );
+
+}
+
+
+/* ========================================================= */
+/* ФОРМАТ ДАТЫ */
+/* ========================================================= */
+
+function formatDate(date) {
+
+  return (
+    date.slice(8, 10) +
+    "." +
+    date.slice(5, 7) +
+    "." +
+    date.slice(0, 4)
+  );
+
+}
+
+
+/* ========================================================= */
+/* ПОКАЗАТЬ КНОПКИ СТАТУСОВ */
+/* ========================================================= */
+
+function showStatusButtons() {
+
+  const content =
+    document.getElementById(
+      "sheetContent"
+    );
+
+
+  content.innerHTML = `
+
+    <button
+      class="sheet-option free"
+      onclick="chooseStatus('green')"
+    >
+      🟢 Могу выступить
+    </button>
+
+
+    <button
+      class="sheet-option maybe"
+      onclick="chooseStatus('yellow')"
+    >
+      🟡 Пока не знаю
+    </button>
+
+
+    <button
+      class="sheet-option busy"
+      onclick="chooseStatus('red')"
+    >
+      🔴 Не могу выступить
+    </button>
+
+  `;
+
+}
+
+
+/* ========================================================= */
+/* ВЫБОР СТАТУСА */
+/* ========================================================= */
+
+function chooseStatus(status) {
+
+  if (!activeEventId) {
+
+    return;
+
+  }
+
+
+  availability[
+    activeEventId
+  ] =
+    status;
+
+
+  drawCalendar();
+
+
+  closeSheet();
+
+}
+
+
+/* ========================================================= */
+/* ЗАКРЫТЬ НИЖНЕЕ ОКНО */
+/* ========================================================= */
+
+function closeSheet() {
+
+  document
+    .getElementById("sheetBackdrop")
+    .style.display =
+      "none";
+
+
+  document
+    .getElementById("sheet")
+    .style.display =
+      "none";
+
+
+  activeDate =
+    null;
+
+
+  activeEventId =
+    null;
+
+}
+
+
+/* ========================================================= */
+/* ОТПРАВКА В SUPABASE */
+/* ========================================================= */
+
+async function sendAvailability() {
+
+  /*
+    Проверяем, выбрал ли артист
+    хотя бы один концерт.
+  */
+
+  if (
+    Object.keys(
+      availability
+    ).length === 0
+  ) {
+
+    if (tg) {
+
+      tg.showAlert(
+        "Сначала укажите доступность хотя бы для одной даты."
+      );
+
+    } else {
 
       alert(
-        "Готово! На следующем этапе подключим сохранение ответов в RMS."
+        "Сначала укажите доступность хотя бы для одной даты."
       );
 
     }
 
-  </script>
+    return;
+
+  }
+
+
+  /*
+    Получаем initData именно
+    от Telegram.
+
+    Именно это позволяет серверу
+    понять, какой артист отправляет
+    данные.
+  */
+
+  const initData =
+    tg
+      ? tg.initData
+      : "";
+
+
+  /*
+    Если сайт открыт просто
+    в Safari, Telegram данных нет.
+  */
+
+  if (!initData) {
+
+    const message =
+      "Откройте календарь через Telegram.";
+
+
+    if (tg) {
+
+      tg.showAlert(
+        message
+      );
+
+    } else {
+
+      alert(
+        message
+      );
+
+    }
+
+    return;
+
+  }
+
+
+  /*
+    Превращаем объект:
+
+    {
+      13: "green",
+      14: "red"
+    }
+
+    в массив:
+
+    [
+      {
+        event_id: 13,
+        status: "green"
+      },
+      {
+        event_id: 14,
+        status: "red"
+      }
+    ]
+  */
+
+  const availabilityArray =
+    Object.entries(
+      availability
+    ).map(
+      ([event_id, status]) => ({
+
+        event_id:
+          Number(event_id),
+
+        status:
+          status
+
+      })
+    );
+
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+
+  sendButton.disabled =
+    true;
+
+
+  sendButton.textContent =
+    "⏳ Отправляем…";
+
+
+  try {
+
+    const response =
+      await fetch(
+        SUPABASE_FUNCTION,
+        {
+
+          method:
+            "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              initData:
+                initData,
+
+              availability:
+                availabilityArray
+
+            })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Не удалось сохранить данные."
+      );
+
+    }
+
+
+    console.log(
+      "Сохранено:",
+      data
+    );
+
+
+    /*
+      Всё получилось.
+    */
+
+    sendButton.textContent =
+      "✅ Отправлено";
+
+
+    if (tg) {
+
+      tg.showAlert(
+        "Спасибо! Ваши даты отправлены в RMS. ❤️"
+      );
+
+    } else {
+
+      alert(
+        "Спасибо! Ваши даты отправлены в RMS. ❤️"
+      );
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    if (tg) {
+
+      tg.showAlert(
+        "Не удалось отправить данные: " +
+        error.message
+      );
+
+    } else {
+
+      alert(
+        "Не удалось отправить данные: " +
+        error.message
+      );
+
+    }
+
+
+    sendButton.disabled =
+      false;
+
+
+    sendButton.textContent =
+      "📤 Отправить";
+
+  }
+
+}
+
+</script>
 
 </body>
 </html>
