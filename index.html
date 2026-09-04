@@ -2,7 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
   <title>RMS — Возможные даты</title>
 
   <style>
@@ -12,7 +16,11 @@
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       background: #f7f7f8;
       color: #222;
     }
@@ -39,6 +47,12 @@
       font-family: inherit;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
+    /* НАПРАВЛЕНИЯ */
+
     .departments {
       display: flex;
       flex-direction: column;
@@ -51,7 +65,7 @@
       border-radius: 18px;
       padding: 18px;
       background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
       font-size: 17px;
       font-weight: 600;
       text-align: left;
@@ -61,6 +75,8 @@
     .department-button:active {
       transform: scale(0.98);
     }
+
+    /* КАЛЕНДАРЬ */
 
     .calendar-header {
       display: flex;
@@ -103,12 +119,16 @@
       border-radius: 13px;
       background: #e9e9eb;
       padding: 7px 3px;
+
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+
       cursor: default;
-      transition: transform 0.15s, background 0.15s;
+      transition:
+        transform 0.15s,
+        background 0.15s;
     }
 
     .day.empty {
@@ -117,7 +137,7 @@
 
     .day.active {
       background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       cursor: pointer;
     }
 
@@ -155,12 +175,21 @@
       color: #555;
     }
 
+    .multiple-events {
+      margin-top: 4px;
+      font-size: 10px;
+      color: #777;
+      font-weight: 600;
+    }
+
+    /* ЛЕГЕНДА */
+
     .legend {
       margin-top: 22px;
       background: white;
       border-radius: 16px;
       padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .legend-item {
@@ -190,51 +219,68 @@
       background: #df7777;
     }
 
+    /* КНОПКА ОТПРАВКИ */
+
     .send-button {
       position: fixed;
       left: 16px;
       right: 16px;
       bottom: calc(16px + env(safe-area-inset-bottom));
+
       max-width: 488px;
       margin: auto;
+
       border: none;
       border-radius: 16px;
       padding: 16px;
+
       background: #222;
       color: white;
+
       font-size: 16px;
       font-weight: 600;
+
       cursor: pointer;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+
+      box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.18);
     }
 
     .send-button:active {
       transform: scale(0.98);
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    /* Нижнее меню */
+    /* НИЖНИЕ ОКНА */
 
     .sheet-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.35);
+
+      background: rgba(0, 0, 0, 0.35);
+
       display: flex;
       align-items: flex-end;
       justify-content: center;
+
       z-index: 1000;
     }
 
     .sheet {
       width: 100%;
       max-width: 520px;
+
       background: white;
+
       border-radius: 22px 22px 0 0;
-      padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
-      box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+
+      padding:
+        12px
+        16px
+        calc(20px + env(safe-area-inset-bottom));
+
+      box-shadow:
+        0 -5px 25px rgba(0, 0, 0, 0.15);
+
       animation: slideUp 0.18s ease-out;
     }
 
@@ -242,6 +288,7 @@
       from {
         transform: translateY(100%);
       }
+
       to {
         transform: translateY(0);
       }
@@ -250,27 +297,73 @@
     .sheet-handle {
       width: 42px;
       height: 5px;
+
       border-radius: 10px;
       background: #ddd;
+
       margin: 0 auto 16px;
     }
 
     .sheet-title {
       text-align: center;
+
       font-size: 17px;
       font-weight: 700;
+
       margin-bottom: 14px;
+    }
+
+    .concert-button {
+      width: 100%;
+
+      border: none;
+      border-radius: 15px;
+
+      padding: 15px;
+
+      margin-top: 8px;
+
+      background: #f3f3f4;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .concert-button:active {
+      transform: scale(0.98);
+    }
+
+    .concert-city {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .concert-time {
+      display: block;
+      font-size: 14px;
+      font-weight: 400;
+      color: #777;
     }
 
     .status-button {
       width: 100%;
+
       border: none;
       border-radius: 15px;
+
       padding: 15px;
+
       margin-top: 8px;
+
       font-size: 16px;
       font-weight: 600;
+
       text-align: left;
+
       cursor: pointer;
     }
 
@@ -288,12 +381,18 @@
 
     .cancel-button {
       width: 100%;
+
       border: none;
       background: #f2f2f3;
+
       border-radius: 15px;
+
       padding: 14px;
+
       margin-top: 14px;
+
       font-size: 15px;
+
       cursor: pointer;
     }
 
@@ -309,41 +408,72 @@
 
   <div class="app">
 
+    <!-- ЭКРАН НАПРАВЛЕНИЙ -->
+
     <div id="departmentScreen">
+
       <h1>Возможные даты</h1>
+
       <div class="subtitle">
         Выберите направление.
       </div>
 
       <div class="departments">
-        <button class="department-button" onclick="openDepartment('classic')">
+
+        <button
+          class="department-button"
+          onclick="openDepartment('classic')"
+        >
           🎼 Классика
         </button>
 
-        <button class="department-button" onclick="openDepartment('pop')">
+        <button
+          class="department-button"
+          onclick="openDepartment('pop')"
+        >
           🎧 Эстрада / неоклассика
         </button>
+
       </div>
+
     </div>
 
 
-    <div id="calendarScreen" class="hidden">
+    <!-- ЭКРАН КАЛЕНДАРЯ -->
+
+    <div
+      id="calendarScreen"
+      class="hidden"
+    >
 
       <div class="calendar-header">
-        <button class="back-button" onclick="backToDepartments()">
+
+        <button
+          class="back-button"
+          onclick="backToDepartments()"
+        >
           ← Назад
         </button>
+
       </div>
 
-      <div id="departmentTitle" class="month-title"></div>
+      <div
+        id="departmentTitle"
+        class="month-title"
+      ></div>
 
       <div class="month-title">
         Сентябрь 2026
       </div>
 
-      <div id="calendar" class="calendar"></div>
+      <div
+        id="calendar"
+        class="calendar"
+      ></div>
+
 
       <div class="legend">
+
         <div class="legend-item">
           <span class="legend-dot dot-green"></span>
           Могу выступить
@@ -358,12 +488,15 @@
           <span class="legend-dot dot-red"></span>
           Не могу выступить
         </div>
+
       </div>
 
     </div>
 
   </div>
 
+
+  <!-- КНОПКА ОТПРАВКИ -->
 
   <button
     id="sendButton"
@@ -374,7 +507,7 @@
   </button>
 
 
-  <!-- Нижнее меню выбора статуса -->
+  <!-- НИЖНЕЕ ОКНО -->
 
   <div
     id="sheetOverlay"
@@ -382,41 +515,64 @@
     onclick="closeSheet(event)"
   >
 
-    <div class="sheet" onclick="event.stopPropagation()">
+    <div
+      class="sheet"
+      onclick="event.stopPropagation()"
+    >
 
       <div class="sheet-handle"></div>
 
-      <div id="sheetTitle" class="sheet-title">
+      <div
+        id="sheetTitle"
+        class="sheet-title"
+      >
         Выберите статус
       </div>
 
-      <button
-        class="status-button status-green"
-        onclick="selectStatus('green')"
-      >
-        🟢 Могу выступить
-      </button>
 
-      <button
-        class="status-button status-yellow"
-        onclick="selectStatus('yellow')"
-      >
-        🟡 Пока не знаю
-      </button>
+      <!-- ВЫБОР КОНЦЕРТА -->
 
-      <button
-        class="status-button status-red"
-        onclick="selectStatus('red')"
-      >
-        🔴 Не могу выступить
-      </button>
+      <div
+        id="concertSelection"
+      ></div>
 
-      <button
-        class="cancel-button"
-        onclick="closeSheet()"
+
+      <!-- ВЫБОР СТАТУСА -->
+
+      <div
+        id="statusSelection"
+        class="hidden"
       >
-        Отмена
-      </button>
+
+        <button
+          class="status-button status-green"
+          onclick="selectStatus('green')"
+        >
+          🟢 Могу выступить
+        </button>
+
+        <button
+          class="status-button status-yellow"
+          onclick="selectStatus('yellow')"
+        >
+          🟡 Пока не знаю
+        </button>
+
+        <button
+          class="status-button status-red"
+          onclick="selectStatus('red')"
+        >
+          🔴 Не могу выступить
+        </button>
+
+        <button
+          class="cancel-button"
+          onclick="closeSheet()"
+        >
+          Отмена
+        </button>
+
+      </div>
 
     </div>
 
@@ -428,9 +584,29 @@
     const SUPABASE_FUNCTION =
       "https://zfuzzkwzcvyimhssmrhb.supabase.co/functions/v1/artist-calendar";
 
+
     let currentDepartment = null;
+
     let events = [];
+
     let selectedDate = null;
+
+    let selectedEventId = null;
+
+
+    /*
+      Теперь availability хранится ПО EVENT_ID.
+
+      Например:
+
+      {
+        13: "green",
+        14: "red"
+      }
+
+      То есть два концерта 27 сентября
+      могут иметь совершенно разные статусы.
+    */
 
     const availability = {};
 
@@ -439,38 +615,57 @@
 
       currentDepartment = department;
 
-      document.getElementById("departmentScreen")
+      document
+        .getElementById("departmentScreen")
         .classList.add("hidden");
 
-      document.getElementById("calendarScreen")
+      document
+        .getElementById("calendarScreen")
         .classList.remove("hidden");
 
-      document.getElementById("sendButton")
+      document
+        .getElementById("sendButton")
         .classList.remove("hidden");
 
-      document.getElementById("departmentTitle").textContent =
-        department === "classic"
-          ? "🎼 Классика"
-          : "🎧 Эстрада / неоклассика";
 
-      document.getElementById("calendar").innerHTML =
-        '<div class="loading">Загружаем даты…</div>';
+      document
+        .getElementById("departmentTitle")
+        .textContent =
+          department === "classic"
+            ? "🎼 Классика"
+            : "🎧 Эстрада / неоклассика";
+
+
+      document
+        .getElementById("calendar")
+        .innerHTML =
+          '<div class="loading">Загружаем даты…</div>';
+
 
       try {
 
-        const response = await fetch(
-          SUPABASE_FUNCTION +
-          "?department=" +
-          encodeURIComponent(department)
-        );
+        const response =
+          await fetch(
+            SUPABASE_FUNCTION +
+            "?department=" +
+            encodeURIComponent(department)
+          );
 
-        const data = await response.json();
+
+        const data =
+          await response.json();
+
 
         if (!response.ok) {
-          throw new Error(data.error || "Ошибка загрузки");
+          throw new Error(
+            data.error || "Ошибка загрузки"
+          );
         }
 
-        events = data.events || [];
+
+        events =
+          data.events || [];
+
 
         renderCalendar();
 
@@ -478,8 +673,11 @@
 
         console.error(error);
 
-        document.getElementById("calendar").innerHTML =
-          '<div class="loading">Не удалось загрузить даты.</div>';
+
+        document
+          .getElementById("calendar")
+          .innerHTML =
+            '<div class="loading">Не удалось загрузить даты.</div>';
       }
     }
 
@@ -489,31 +687,53 @@
       const calendar =
         document.getElementById("calendar");
 
+
       calendar.innerHTML = "";
 
+
       const weekdays = [
-        "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"
+        "Пн",
+        "Вт",
+        "Ср",
+        "Чт",
+        "Пт",
+        "Сб",
+        "Вс"
       ];
+
 
       weekdays.forEach(day => {
 
-        const el = document.createElement("div");
+        const el =
+          document.createElement("div");
 
         el.className = "weekday";
+
         el.textContent = day;
 
         calendar.appendChild(el);
+
       });
 
 
       const year = 2026;
-      const month = 8; // сентябрь, потому что январь = 0
+
+      const month = 8;
+
 
       const firstDay =
-        new Date(year, month, 1).getDay();
+        new Date(
+          year,
+          month,
+          1
+        ).getDay();
+
 
       const mondayBasedFirstDay =
-        firstDay === 0 ? 6 : firstDay - 1;
+        firstDay === 0
+          ? 6
+          : firstDay - 1;
+
 
       for (
         let i = 0;
@@ -521,16 +741,23 @@
         i++
       ) {
 
-        const empty = document.createElement("div");
+        const empty =
+          document.createElement("div");
 
-        empty.className = "day empty";
+        empty.className =
+          "day empty";
 
         calendar.appendChild(empty);
+
       }
 
 
       const daysInMonth =
-        new Date(year, month + 1, 0).getDate();
+        new Date(
+          year,
+          month + 1,
+          0
+        ).getDate();
 
 
       for (
@@ -542,101 +769,338 @@
         const date =
           `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
 
-        const event =
-          events.find(e => e.date === date);
+
+        const dayEvents =
+          events.filter(
+            event => event.date === date
+          );
 
 
-        const day = document.createElement("button");
+        const day =
+          document.createElement("button");
+
 
         day.className = "day";
 
 
-        if (event) {
+        if (dayEvents.length > 0) {
 
           day.classList.add("active");
 
-          const status =
-            availability[date];
 
-          if (status) {
-            day.classList.add(status);
+          /*
+            Если один концерт —
+            показываем его статус.
+
+            Если несколько —
+            статус в самой ячейке не ставим,
+            потому что у разных концертов
+            могут быть разные ответы.
+          */
+
+          if (dayEvents.length === 1) {
+
+            const status =
+              availability[
+                dayEvents[0].id
+              ];
+
+
+            if (status) {
+              day.classList.add(status);
+            }
+
           }
 
-          day.onclick = () => openSheet(date);
 
+          day.onclick = () =>
+            openDateSheet(
+              date,
+              dayEvents
+            );
         }
 
 
         const number =
           document.createElement("div");
 
-        number.className = "day-number";
-        number.textContent = dayNumber;
+        number.className =
+          "day-number";
+
+        number.textContent =
+          dayNumber;
 
         day.appendChild(number);
 
 
-        if (event && event.time) {
+        if (dayEvents.length === 1) {
 
-          const time =
-            document.createElement("div");
+          const event =
+            dayEvents[0];
 
-          time.className = "day-time";
-          time.textContent = event.time;
 
-          day.appendChild(time);
+          if (event.time) {
+
+            const time =
+              document.createElement("div");
+
+            time.className =
+              "day-time";
+
+            time.textContent =
+              event.time;
+
+            day.appendChild(time);
+          }
+
+
+          const city =
+            getCityName(event);
+
+
+          if (city) {
+
+            const cityElement =
+              document.createElement("div");
+
+            cityElement.className =
+              "day-city";
+
+            cityElement.textContent =
+              city;
+
+            day.appendChild(cityElement);
+          }
+
         }
 
 
-        if (event && event.city) {
+        if (dayEvents.length > 1) {
 
-          const city =
+          const multiple =
             document.createElement("div");
 
-          city.className = "day-city";
-          city.textContent = event.city;
+          multiple.className =
+            "multiple-events";
 
-          day.appendChild(city);
+          multiple.textContent =
+            `${dayEvents.length} концерта`;
+
+          day.appendChild(multiple);
         }
 
 
         calendar.appendChild(day);
+
       }
 
     }
 
 
-    function openSheet(date) {
+    function openDateSheet(
+      date,
+      dayEvents
+    ) {
 
       selectedDate = date;
 
-      const event =
-        events.find(e => e.date === date);
+      selectedEventId = null;
 
-      let title =
-        formatDate(date);
 
-      if (event && event.city) {
-        title += " · " + event.city;
+      /*
+        ОДИН концерт:
+        сразу открываем выбор статуса.
+      */
+
+      if (dayEvents.length === 1) {
+
+        selectedEventId =
+          dayEvents[0].id;
+
+
+        showStatusSelection(
+          dayEvents[0]
+        );
+
+        return;
       }
 
-      document.getElementById("sheetTitle").textContent =
-        title;
 
-      document.getElementById("sheetOverlay")
-        .classList.remove("hidden");
+      /*
+        НЕСКОЛЬКО КОНЦЕРТОВ:
+        сначала выбираем конкретный концерт.
+      */
+
+      showConcertSelection(
+        date,
+        dayEvents
+      );
+
+    }
+
+
+    function showConcertSelection(
+      date,
+      dayEvents
+    ) {
+
+      const overlay =
+        document.getElementById(
+          "sheetOverlay"
+        );
+
+
+      const title =
+        document.getElementById(
+          "sheetTitle"
+        );
+
+
+      const concertSelection =
+        document.getElementById(
+          "concertSelection"
+        );
+
+
+      const statusSelection =
+        document.getElementById(
+          "statusSelection"
+        );
+
+
+      title.textContent =
+        formatDate(date);
+
+
+      concertSelection.innerHTML =
+        "";
+
+
+      statusSelection
+        .classList
+        .add("hidden");
+
+
+      dayEvents.forEach(event => {
+
+        const button =
+          document.createElement("button");
+
+
+        button.className =
+          "concert-button";
+
+
+        const city =
+          getCityName(event);
+
+
+        button.innerHTML = `
+          <span class="concert-city">
+            📍 ${city}
+          </span>
+          <span class="concert-time">
+            ${event.time || ""}
+          </span>
+        `;
+
+
+        button.onclick = () =>
+          chooseConcert(event);
+
+
+        concertSelection
+          .appendChild(button);
+
+      });
+
+
+      overlay
+        .classList
+        .remove("hidden");
+
+    }
+
+
+    function chooseConcert(event) {
+
+      selectedEventId =
+        event.id;
+
+
+      showStatusSelection(event);
+
+    }
+
+
+    function showStatusSelection(event) {
+
+      const overlay =
+        document.getElementById(
+          "sheetOverlay"
+        );
+
+
+      const title =
+        document.getElementById(
+          "sheetTitle"
+        );
+
+
+      const concertSelection =
+        document.getElementById(
+          "concertSelection"
+        );
+
+
+      const statusSelection =
+        document.getElementById(
+          "statusSelection"
+        );
+
+
+      title.textContent =
+        `${formatDate(event.date)} · ${getCityName(event)} · ${event.time || ""}`;
+
+
+      concertSelection.innerHTML =
+        "";
+
+
+      concertSelection
+        .classList
+        .add("hidden");
+
+
+      statusSelection
+        .classList
+        .remove("hidden");
+
+
+      overlay
+        .classList
+        .remove("hidden");
+
     }
 
 
     function selectStatus(status) {
 
-      if (!selectedDate) return;
+      if (!selectedEventId) {
+        return;
+      }
 
-      availability[selectedDate] = status;
+
+      availability[
+        selectedEventId
+      ] = status;
+
 
       closeSheet();
 
+
       renderCalendar();
+
     }
 
 
@@ -645,47 +1109,108 @@
       if (
         event &&
         event.target !==
-        document.getElementById("sheetOverlay")
+          document.getElementById(
+            "sheetOverlay"
+          )
       ) {
         return;
       }
 
-      document.getElementById("sheetOverlay")
-        .classList.add("hidden");
+
+      document
+        .getElementById(
+          "sheetOverlay"
+        )
+        .classList
+        .add("hidden");
+
+
+      document
+        .getElementById(
+          "concertSelection"
+        )
+        .classList
+        .remove("hidden");
+
+
+      document
+        .getElementById(
+          "statusSelection"
+        )
+        .classList
+        .add("hidden");
+
 
       selectedDate = null;
+
+      selectedEventId = null;
+
+    }
+
+
+    function getCityName(event) {
+
+      if (event.city) {
+        return event.city;
+      }
+
+      return "Санкт-Петербург";
+
     }
 
 
     function backToDepartments() {
 
-      document.getElementById("calendarScreen")
-        .classList.add("hidden");
+      document
+        .getElementById(
+          "calendarScreen"
+        )
+        .classList
+        .add("hidden");
 
-      document.getElementById("sendButton")
-        .classList.add("hidden");
 
-      document.getElementById("departmentScreen")
-        .classList.remove("hidden");
+      document
+        .getElementById(
+          "sendButton"
+        )
+        .classList
+        .add("hidden");
+
+
+      document
+        .getElementById(
+          "departmentScreen"
+        )
+        .classList
+        .remove("hidden");
+
 
       events = [];
+
       currentDepartment = null;
+
     }
 
 
     function formatDate(date) {
 
-      const [year, month, day] =
-        date.split("-");
+      const [
+        year,
+        month,
+        day
+      ] = date.split("-");
+
 
       return `${day}.${month}.${year}`;
+
     }
 
 
     function sendAvailability() {
 
       if (
-        Object.keys(availability).length === 0
+        Object.keys(availability)
+          .length === 0
       ) {
 
         alert(
@@ -695,14 +1220,17 @@
         return;
       }
 
+
       console.log(
         "Готовим отправку:",
         availability
       );
 
+
       alert(
         "Готово! На следующем этапе подключим сохранение ответов в RMS."
       );
+
     }
 
   </script>
