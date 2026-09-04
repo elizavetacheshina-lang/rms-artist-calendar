@@ -2,11 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>RMS — Возможные даты</title>
 
   <style>
@@ -16,11 +12,7 @@
 
     body {
       margin: 0;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f7f7f8;
       color: #222;
     }
@@ -51,7 +43,7 @@
       display: none !important;
     }
 
-    /* НАПРАВЛЕНИЯ */
+    /* Направления */
 
     .departments {
       display: flex;
@@ -65,7 +57,7 @@
       border-radius: 18px;
       padding: 18px;
       background: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
       font-size: 17px;
       font-weight: 600;
       text-align: left;
@@ -76,12 +68,11 @@
       transform: scale(0.98);
     }
 
-    /* КАЛЕНДАРЬ */
+    /* Календарь */
 
     .calendar-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin-bottom: 18px;
     }
 
@@ -119,16 +110,12 @@
       border-radius: 13px;
       background: #e9e9eb;
       padding: 7px 3px;
-
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-
       cursor: default;
-      transition:
-        transform 0.15s,
-        background 0.15s;
+      transition: transform 0.15s, background 0.15s;
     }
 
     .day.empty {
@@ -137,7 +124,7 @@
 
     .day.active {
       background: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       cursor: pointer;
     }
 
@@ -182,14 +169,14 @@
       font-weight: 600;
     }
 
-    /* ЛЕГЕНДА */
+    /* Легенда */
 
     .legend {
       margin-top: 22px;
       background: white;
       border-radius: 16px;
       padding: 15px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .legend-item {
@@ -219,69 +206,52 @@
       background: #df7777;
     }
 
-    /* КНОПКА ОТПРАВКИ */
+    /* Кнопка отправки */
 
     .send-button {
       position: fixed;
       left: 16px;
       right: 16px;
       bottom: calc(16px + env(safe-area-inset-bottom));
-
       max-width: 488px;
       margin: auto;
-
       border: none;
       border-radius: 16px;
       padding: 16px;
-
       background: #222;
       color: white;
-
       font-size: 16px;
       font-weight: 600;
-
       cursor: pointer;
-
-      box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.18);
     }
 
     .send-button:active {
       transform: scale(0.98);
     }
 
-    /* НИЖНИЕ ОКНА */
+    /* Нижнее меню */
 
     .sheet-overlay {
       position: fixed;
       inset: 0;
-
-      background: rgba(0, 0, 0, 0.35);
-
+      background: rgba(0,0,0,0.35);
       display: flex;
       align-items: flex-end;
       justify-content: center;
-
       z-index: 1000;
     }
 
     .sheet {
       width: 100%;
       max-width: 520px;
-
       background: white;
-
       border-radius: 22px 22px 0 0;
-
-      padding:
-        12px
-        16px
-        calc(20px + env(safe-area-inset-bottom));
-
-      box-shadow:
-        0 -5px 25px rgba(0, 0, 0, 0.15);
-
+      padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
+      box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
       animation: slideUp 0.18s ease-out;
+      max-height: 85vh;
+      overflow-y: auto;
     }
 
     @keyframes slideUp {
@@ -297,44 +267,48 @@
     .sheet-handle {
       width: 42px;
       height: 5px;
-
       border-radius: 10px;
       background: #ddd;
-
       margin: 0 auto 16px;
     }
 
     .sheet-title {
       text-align: center;
-
       font-size: 17px;
       font-weight: 700;
-
       margin-bottom: 14px;
     }
 
+    /* Концерты внутри меню */
+
     .concert-button {
       width: 100%;
-
       border: none;
       border-radius: 15px;
-
       padding: 15px;
-
       margin-top: 8px;
-
       background: #f3f3f4;
-
       font-size: 16px;
       font-weight: 600;
-
       text-align: left;
-
       cursor: pointer;
+      transition: background 0.15s;
     }
 
     .concert-button:active {
       transform: scale(0.98);
+    }
+
+    .concert-button.green {
+      background: #dff3e4;
+    }
+
+    .concert-button.yellow {
+      background: #fff1bf;
+    }
+
+    .concert-button.red {
+      background: #f7dada;
     }
 
     .concert-city {
@@ -349,21 +323,24 @@
       color: #777;
     }
 
+    .concert-status {
+      display: block;
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Статусы */
+
     .status-button {
       width: 100%;
-
       border: none;
       border-radius: 15px;
-
       padding: 15px;
-
       margin-top: 8px;
-
       font-size: 16px;
       font-weight: 600;
-
       text-align: left;
-
       cursor: pointer;
     }
 
@@ -381,18 +358,12 @@
 
     .cancel-button {
       width: 100%;
-
       border: none;
       background: #f2f2f3;
-
       border-radius: 15px;
-
       padding: 14px;
-
       margin-top: 14px;
-
       font-size: 15px;
-
       cursor: pointer;
     }
 
@@ -408,7 +379,7 @@
 
   <div class="app">
 
-    <!-- ЭКРАН НАПРАВЛЕНИЙ -->
+    <!-- Экран направлений -->
 
     <div id="departmentScreen">
 
@@ -439,12 +410,9 @@
     </div>
 
 
-    <!-- ЭКРАН КАЛЕНДАРЯ -->
+    <!-- Экран календаря -->
 
-    <div
-      id="calendarScreen"
-      class="hidden"
-    >
+    <div id="calendarScreen" class="hidden">
 
       <div class="calendar-header">
 
@@ -496,7 +464,7 @@
   </div>
 
 
-  <!-- КНОПКА ОТПРАВКИ -->
+  <!-- Кнопка отправки -->
 
   <button
     id="sendButton"
@@ -507,7 +475,7 @@
   </button>
 
 
-  <!-- НИЖНЕЕ ОКНО -->
+  <!-- Нижнее меню -->
 
   <div
     id="sheetOverlay"
@@ -530,14 +498,12 @@
       </div>
 
 
-      <!-- ВЫБОР КОНЦЕРТА -->
+      <!-- Выбор концерта -->
 
-      <div
-        id="concertSelection"
-      ></div>
+      <div id="concertSelection"></div>
 
 
-      <!-- ВЫБОР СТАТУСА -->
+      <!-- Выбор статуса -->
 
       <div
         id="statusSelection"
@@ -586,26 +552,23 @@
 
 
     let currentDepartment = null;
-
     let events = [];
-
     let selectedDate = null;
-
     let selectedEventId = null;
 
 
     /*
-      Теперь availability хранится ПО EVENT_ID.
+      Статусы хранятся по ID конкретного концерта.
 
       Например:
 
       {
-        13: "green",
-        14: "red"
+        13: "red",
+        14: "green"
       }
 
-      То есть два концерта 27 сентября
-      могут иметь совершенно разные статусы.
+      Поэтому Москва и Санкт-Петербург
+      могут иметь разные ответы.
     */
 
     const availability = {};
@@ -707,9 +670,11 @@
         const el =
           document.createElement("div");
 
-        el.className = "weekday";
+        el.className =
+          "weekday";
 
-        el.textContent = day;
+        el.textContent =
+          day;
 
         calendar.appendChild(el);
 
@@ -717,7 +682,6 @@
 
 
       const year = 2026;
-
       const month = 8;
 
 
@@ -772,7 +736,8 @@
 
         const dayEvents =
           events.filter(
-            event => event.date === date
+            event =>
+              event.date === date
           );
 
 
@@ -780,7 +745,8 @@
           document.createElement("button");
 
 
-        day.className = "day";
+        day.className =
+          "day";
 
 
         if (dayEvents.length > 0) {
@@ -789,13 +755,8 @@
 
 
           /*
-            Если один концерт —
-            показываем его статус.
-
-            Если несколько —
-            статус в самой ячейке не ставим,
-            потому что у разных концертов
-            могут быть разные ответы.
+            Если концерт один —
+            дата получает его цвет.
           */
 
           if (dayEvents.length === 1) {
@@ -832,6 +793,10 @@
 
         day.appendChild(number);
 
+
+        /*
+          Один концерт
+        */
 
         if (dayEvents.length === 1) {
 
@@ -875,6 +840,10 @@
         }
 
 
+        /*
+          Несколько концертов
+        */
+
         if (dayEvents.length > 1) {
 
           const multiple =
@@ -903,13 +872,12 @@
     ) {
 
       selectedDate = date;
-
       selectedEventId = null;
 
 
       /*
-        ОДИН концерт:
-        сразу открываем выбор статуса.
+        Если концерт один —
+        сразу выбор статуса.
       */
 
       if (dayEvents.length === 1) {
@@ -927,8 +895,8 @@
 
 
       /*
-        НЕСКОЛЬКО КОНЦЕРТОВ:
-        сначала выбираем конкретный концерт.
+        Если концертов несколько —
+        сначала выбираем концерт.
       */
 
       showConcertSelection(
@@ -976,6 +944,11 @@
         "";
 
 
+      concertSelection
+        .classList
+        .remove("hidden");
+
+
       statusSelection
         .classList
         .add("hidden");
@@ -987,21 +960,62 @@
           document.createElement("button");
 
 
+        const status =
+          availability[event.id];
+
+
         button.className =
           "concert-button";
+
+
+        /*
+          ВАЖНО:
+          теперь выбранный статус
+          отображается прямо на концерте.
+        */
+
+        if (status) {
+          button.classList.add(status);
+        }
 
 
         const city =
           getCityName(event);
 
 
+        let statusText = "";
+
+
+        if (status === "green") {
+          statusText =
+            "🟢 Могу выступить";
+        }
+
+        if (status === "yellow") {
+          statusText =
+            "🟡 Пока не знаю";
+        }
+
+        if (status === "red") {
+          statusText =
+            "🔴 Не могу выступить";
+        }
+
+
         button.innerHTML = `
           <span class="concert-city">
             📍 ${city}
           </span>
+
           <span class="concert-time">
             ${event.time || ""}
           </span>
+
+          ${
+            statusText
+              ? `<span class="concert-status">${statusText}</span>`
+              : ""
+          }
         `;
 
 
@@ -1091,6 +1105,11 @@
       }
 
 
+      /*
+        Записываем статус
+        конкретного event_id.
+      */
+
       availability[
         selectedEventId
       ] = status;
@@ -1142,7 +1161,6 @@
 
 
       selectedDate = null;
-
       selectedEventId = null;
 
     }
@@ -1186,7 +1204,6 @@
 
 
       events = [];
-
       currentDepartment = null;
 
     }
@@ -1198,7 +1215,8 @@
         year,
         month,
         day
-      ] = date.split("-");
+      ] =
+        date.split("-");
 
 
       return `${day}.${month}.${year}`;
