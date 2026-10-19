@@ -1783,23 +1783,25 @@ function openSheet(date) {
 /* ========================================================= */
 
 function formatEventInfo(event) {
-
   const city =
     event.city ||
     "Санкт-Петербург";
-
 
   const time =
     event.time ||
     "Время не указано";
 
+  const venue =
+    event.venue
+      ? ", " + event.venue
+      : "";
 
   return (
     city +
     " · " +
-    time
+    time +
+    venue
   );
-
 }
 
 
