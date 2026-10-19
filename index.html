@@ -1733,6 +1733,12 @@ function openSheet(date) {
           "Время не указано"
         ) +
 
+        (
+          event.venue
+              ? ', ' + event.venue
+              : ''
+        ) +
+        
         '</div>' +
 
         (
