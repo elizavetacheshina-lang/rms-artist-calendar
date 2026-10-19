@@ -844,28 +844,23 @@ let activeEventId = null;
 
 
 /*
-  Сейчас календарь начинается
-  с сентября 2026 года.
-
-  Потом можно будет убрать это ограничение
-  и автоматически открывать текущий месяц.
+  Календарь автоматически открывается
+  на текущем месяце. Назад текущего месяца
+  листать нельзя, будущие месяцы доступны.
 */
 
-let calendarYear = 2026;
+const initialCalendarDate = new Date();
 
-let calendarMonth = 8;
+let calendarYear = initialCalendarDate.getFullYear();
+
+let calendarMonth = initialCalendarDate.getMonth();
 
 
-/*
-  Минимальный месяц календаря.
+/* Минимальный месяц обновляется при открытии календаря. */
 
-  До сентября 2026 года
-  назад листать не даём.
-*/
+let MIN_CALENDAR_YEAR = initialCalendarDate.getFullYear();
 
-const MIN_CALENDAR_YEAR = 2026;
-
-const MIN_CALENDAR_MONTH = 8;
+let MIN_CALENDAR_MONTH = initialCalendarDate.getMonth();
 
 
 /*
@@ -1069,7 +1064,7 @@ function changeMonth(direction) {
 
 
   /*
-    Не даём уйти раньше сентября 2026.
+    Не даём уйти раньше текущего месяца.
   */
 
   if (
@@ -1109,14 +1104,17 @@ async function openCalendar(department) {
     department;
 
 
-  /*
-    При каждом новом открытии
-    начинаем с сентября 2026.
-  */
+  /* При каждом открытии начинаем с текущего месяца. */
 
-  calendarYear = 2026;
+  const currentDate = new Date();
 
-  calendarMonth = 8;
+  calendarYear = currentDate.getFullYear();
+
+  calendarMonth = currentDate.getMonth();
+
+  MIN_CALENDAR_YEAR = currentDate.getFullYear();
+
+  MIN_CALENDAR_MONTH = currentDate.getMonth();
 
 
   document
@@ -1728,6 +1726,13 @@ function openSheet(date) {
         '<div class="concert-meta">' +
 
         (
+          event.venue ||
+          "Место не указано"
+        ) +
+
+        ' · ' +
+
+        (
           event.time ||
           "Время не указано"
         ) +
@@ -1782,6 +1787,11 @@ function formatEventInfo(event) {
     "Санкт-Петербург";
 
 
+  const venue =
+    event.venue ||
+    "Место не указано";
+
+
   const time =
     event.time ||
     "Время не указано";
@@ -1789,6 +1799,8 @@ function formatEventInfo(event) {
 
   return (
     city +
+    " · " +
+    venue +
     " · " +
     time
   );
