@@ -851,11 +851,12 @@ let activeEventId = null;
   и автоматически открывать текущий месяц.
 */
 
-let calendarYear = 2026;
+const today = new Date();
 
-let calendarMonth = 8;
+let calendarYear = today.getFullYear();
 
-
+let calendarMonth = today.getMonth();
+  
 /*
   Минимальный месяц календаря.
 
@@ -863,9 +864,9 @@ let calendarMonth = 8;
   назад листать не даём.
 */
 
-const MIN_CALENDAR_YEAR = 2026;
+const MIN_CALENDAR_YEAR = new Date().getFullYear();
 
-const MIN_CALENDAR_MONTH = 8;
+const MIN_CALENDAR_MONTH = new Date().getMonth();
 
 
 /*
@@ -1114,9 +1115,9 @@ async function openCalendar(department) {
     начинаем с сентября 2026.
   */
 
-  calendarYear = 2026;
+  calendarYear = new Date().getFullYear();
 
-  calendarMonth = 8;
+  calendarMonth = new Date().getMonth();
 
 
   document
